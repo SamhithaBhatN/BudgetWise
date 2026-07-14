@@ -1,0 +1,7 @@
+import os
+
+class Config:
+    SECRET_KEY = os.getenv(
+        "SECRET_KEY",
+        "budgetwise-development-secret-key"
+    )
