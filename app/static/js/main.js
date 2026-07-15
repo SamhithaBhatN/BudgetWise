@@ -1,0 +1,1 @@
+console.log("BudgetWise Loaded Successfully");

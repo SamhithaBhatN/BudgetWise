@@ -1,0 +1,51 @@
+body{
+    background:#F8FAFC;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+.navbar-brand{
+    font-size:1.5rem;
+}
+
+section{
+    min-height:70vh;
+}
+
+.hero{
+    min-height:80vh;
+    display:flex;
+    align-items:center;
+}
+
+.finance-card{
+    background:#ffffff;
+    border-radius:20px;
+    padding:35px;
+}
+
+.btn{
+    border-radius:10px;
+    padding:12px 28px;
+}
+
+.display-4{
+    line-height:1.2;
+}
+
+.feature-card{
+    background:#fff;
+    padding:30px;
+    border-radius:15px;
+    transition:0.3s;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+.feature-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 12px 30px rgba(0,0,0,0.15);
+}
+
+.feature-icon{
+    font-size:3rem;
+    color:#10B981;
+}
