@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Register - BudgetWise{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5 mb-5" style="max-width:700px;">
+
+    <div class="card shadow-lg border-0 rounded-4">
+
+        <div class="card-body p-5">
+
+            <h2 class="text-center fw-bold mb-2">
+                Create Your BudgetWise Account
+            </h2>
+
+            <p class="text-center text-muted mb-4">
+                Start managing your finances smarter.
+            </p>
+
+            <form method="POST">
+
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    {{ form.full_name.label(class="form-label") }}
+                    {{ form.full_name(class="form-control") }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.username.label(class="form-label") }}
+                    {{ form.username(class="form-control") }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control") }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control") }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.confirm_password.label(class="form-label") }}
+                    {{ form.confirm_password(class="form-control") }}
+                </div>
+
+                <div class="d-grid">
+                    {{ form.submit(class="btn btn-success btn-lg") }}
+                </div>
+
+            </form>
+
+            <div class="text-center mt-4">
+                Already have an account?
+                <a href="{{ url_for('auth.login') }}">Login</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
