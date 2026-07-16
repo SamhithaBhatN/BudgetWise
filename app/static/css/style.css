@@ -1,3 +1,67 @@
+/* =====================================
+   BudgetWise Design System
+===================================== */
+
+:root{
+
+    /* Brand */
+
+    --primary:#10B981;
+    --primary-dark:#059669;
+
+    /* Accent */
+
+    --blue:#2563EB;
+    --warning:#F59E0B;
+    --danger:#EF4444;
+
+    /* Background */
+
+    --background:#F8FAFC;
+    --card:#FFFFFF;
+
+    /* Text */
+
+    --text:#111827;
+    --text-light:#6B7280;
+
+    /* Border */
+
+    --border:#E5E7EB;
+
+    /* Shadow */
+
+    --shadow:
+        0 10px 30px rgba(0,0,0,.08);
+
+    /* Radius */
+
+    --radius:18px;
+
+    /* Transition */
+
+    --transition:.3s ease;
+
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:'Poppins',sans-serif;
+
+    background:var(--background);
+
+    color:var(--text);
+
+    line-height:1.7;
+
+}
+
 html{
     scroll-behavior:smooth;
 }
@@ -44,8 +108,44 @@ section{
 }
 
 .btn{
-    border-radius:10px;
+
+    border-radius:12px;
+
     padding:12px 28px;
+
+    font-weight:600;
+
+    transition:var(--transition);
+
+}
+
+.btn-success{
+
+    background:var(--primary);
+
+    border:none;
+
+}
+
+.btn-success:hover{
+
+    background:var(--primary-dark);
+
+    transform:translateY(-2px);
+
+}
+
+.btn-outline-success{
+
+    color:var(--primary);
+
+    border:2px solid var(--primary);
+
+}
+
+.btn-outline-success:hover{
+    background:var(--primary);
+    border-color:var(--primary);
 }
 
 .display-4{
@@ -53,19 +153,30 @@ section{
 }
 
 .feature-card{
-    background:#fff;
-    padding:30px;
-    border-radius:15px;
-    transition:0.3s;
-    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:35px;
+    transition:var(--transition);
 }
 
 .feature-card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 12px 30px rgba(0,0,0,0.15);
+    transform:translateY(-10px);
 }
 
 .feature-icon{
     font-size:3rem;
     color:#10B981;
+}
+
+/* Statistics Section */
+
+.stats-section{
+    background:#10B981;
+    color:white;
+}
+
+.stats-number{
+    font-size:3rem;
+    font-weight:700;
 }

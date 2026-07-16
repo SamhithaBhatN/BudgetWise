@@ -1,10 +1,23 @@
 from flask import Flask
+from config import Config
+
+from app.extensions import db, migrate, login_manager
+
 
 def create_app():
-    app = Flask(__name__)
-    app.config.from_object("config.Config")
+    flask_app = Flask(__name__)
+    flask_app.config.from_object(Config)
 
-    from .routes import main
-    app.register_blueprint(main)
+    db.init_app(flask_app)
+    migrate.init_app(flask_app, db)
+    login_manager.init_app(flask_app)
 
-    return app
+    import app.auth_loader
+
+    from app.main import main
+    flask_app.register_blueprint(main)
+
+    from app.auth import auth
+    flask_app.register_blueprint(auth)
+
+    return flask_app
