@@ -2,52 +2,138 @@
 
     <div class="container">
 
-        <a class="navbar-brand fw-bold text-success" href="/">
+        {% if current_user.is_authenticated %}
+            <a class="navbar-brand fw-bold text-success"
+            href="{{ url_for('dashboard.home') }}">
             💰 BudgetWise
-        </a>
+            </a>
+        {% else %}
+            <a class="navbar-brand fw-bold text-success"
+            href="{{ url_for('main.home') }}">
+            💰 BudgetWise
+            </a>
+        {% endif %}
 
         <button class="navbar-toggler"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#navbarMenu">
-
             <span class="navbar-toggler-icon"></span>
-
         </button>
 
         <div class="collapse navbar-collapse" id="navbarMenu">
 
-            <ul class="navbar-nav mx-auto">
+            {% if current_user.is_authenticated %}
 
-                <li class="nav-item">
-                    <a class="nav-link" href="#features">Features</a>
-                </li>
+                <!-- Logged In Menu -->
+                <ul class="navbar-nav mx-auto">
 
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard.home') }}">
+                            Dashboard
+                        </a>
+                    </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('transactions.index') }}">
+                            Transactions
+                        </a>
+                    </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Budgets
+                        </a>
+                    </li>
 
-            </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Goals
+                        </a>
+                    </li>
 
-            <div class="d-flex">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Reports
+                        </a>
+                    </li>
 
-                <a href="{{ url_for('auth.login') }}" class="btn btn-outline-success me-2">
-                    Login
-                </a>
+                </ul>
 
-                <a href="{{ url_for('auth.register') }}" class="btn btn-success">
-                    Get Started
-                </a>
+                <div class="dropdown">
 
-            </div>
+                    <button class="btn btn-success dropdown-toggle"
+                            data-bs-toggle="dropdown">
+
+                        {{ current_user.full_name }}
+
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                Profile
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                Settings
+                            </a>
+                        </li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <a class="dropdown-item text-danger"
+                               href="{{ url_for('auth.logout') }}">
+                                Logout
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            {% else %}
+
+                <!-- Guest Menu -->
+                <ul class="navbar-nav mx-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Pricing</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+
+                </ul>
+
+                <div class="d-flex">
+
+                    <a href="{{ url_for('auth.login') }}"
+                       class="btn btn-outline-success me-2">
+                        Login
+                    </a>
+
+                    <a href="{{ url_for('auth.register') }}"
+                       class="btn btn-success">
+                        Get Started
+                    </a>
+
+                </div>
+
+            {% endif %}
 
         </div>
 

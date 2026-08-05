@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, flash
-from flask_login import login_user
+from flask_login import login_user, login_required, logout_user
 
 from app.auth import auth
 from app.auth.forms import RegisterForm, LoginForm
@@ -23,7 +23,7 @@ def login():
 
             flash("Welcome back!", "success")
 
-            return redirect(url_for("main.home"))
+            return redirect(url_for("dashboard.home"))
 
         flash("Invalid email or password.", "danger")
 
@@ -71,3 +71,10 @@ def register():
         return redirect(url_for("auth.login"))
 
     return render_template("auth/register.html", form=form)
+
+@auth.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash("Logged out successfully!", "success")
+    return redirect(url_for("main.home"))

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - BudgetWise{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="mb-4">
+        <h2>Welcome, {{ user.full_name }} 👋</h2>
+        <p class="text-muted">
+            Here's an overview of your finances.
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Total Balance</h6>
+                    <h3 class="text-success">₹0.00</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Income</h6>
+                    <h3 class="text-primary">₹0.00</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Expenses</h6>
+                    <h3 class="text-danger">₹0.00</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6>Savings</h6>
+                    <h3 class="text-info">₹0.00</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

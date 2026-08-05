@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Transaction{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h2 class="mb-4">
+        Edit Transaction
+    </h2>
+
+    <form method="POST">
+
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.amount.label(class="form-label") }}
+            {{ form.amount(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.type.label(class="form-label") }}
+            {{ form.type(class="form-select") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.category.label(class="form-label") }}
+            {{ form.category(class="form-select") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.date.label(class="form-label") }}
+            {{ form.date(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.note.label(class="form-label") }}
+            {{ form.note(class="form-control", rows=4) }}
+        </div>
+
+        <button class="btn btn-primary">
+            Update Transaction
+        </button>
+
+        <a href="{{ url_for('transactions.index') }}"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -20,4 +20,10 @@ def create_app():
     from app.auth import auth
     flask_app.register_blueprint(auth)
 
+    from app.dashboard import dashboard
+    flask_app.register_blueprint(dashboard)
+
+    from app.transactions import transactions
+    flask_app.register_blueprint(transactions)
+    
     return flask_app

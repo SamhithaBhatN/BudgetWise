@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Transactions{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2>Transactions</h2>
+
+        <a href="{{ url_for('transactions.add_transaction') }}"
+           class="btn btn-success">
+            + Add Transaction
+        </a>
+
+    </div>
+
+    {% if transactions %}
+
+    <table class="table table-hover align-middle">
+
+        <thead class="table-success">
+
+            <tr>
+                <th>Date</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th class="text-end">Amount</th>
+                <th class="text-center">Actions</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for transaction in transactions %}
+
+            <tr>
+
+                <td>{{ transaction.date }}</td>
+
+                <td>{{ transaction.title }}</td>
+
+                <td>{{ transaction.category }}</td>
+
+                <td>
+
+                    {% if transaction.type == "Income" %}
+                        <span class="badge bg-success">
+                            Income
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger">
+                            Expense
+                        </span>
+                    {% endif %}
+
+                </td>
+
+                <td class="text-end">
+
+                    ₹{{ "%.2f"|format(transaction.amount) }}
+
+                </td>
+                
+                <td class="text-center">
+
+                    <a href="{{ url_for('transactions.edit_transaction', id=transaction.id) }}"
+                        class="btn btn-sm btn-outline-primary me-1">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+
+                    <form
+                        action="{{ url_for('transactions.delete_transaction', id=transaction.id) }}"
+                        method="POST"
+                        style="display:inline;">
+
+                        <button
+                            type="submit"
+                            class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Are you sure you want to delete this transaction?')">
+
+                            <i class="bi bi-trash"></i>
+
+                        </button>
+
+                    </form>
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+        <div class="alert alert-info">
+
+            No transactions found.
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
