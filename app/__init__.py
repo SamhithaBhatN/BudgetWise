@@ -25,5 +25,8 @@ def create_app():
 
     from app.transactions import transactions
     flask_app.register_blueprint(transactions)
+
+    from app.categories import categories
+    flask_app.register_blueprint(categories)
     
     return flask_app

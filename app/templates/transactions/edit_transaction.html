@@ -6,9 +6,12 @@
 
 <div class="container py-5">
 
-    <h2 class="mb-4">
-        Edit Transaction
-    </h2>
+    <div class="mb-4">
+        <h2 class="fw-bold">Edit Transaction</h2>
+        <p class="text-muted">
+            Update your transaction details.
+        </p>
+    </div>
 
     <form method="POST">
 
@@ -26,12 +29,12 @@
 
         <div class="mb-3">
             {{ form.type.label(class="form-label") }}
-            {{ form.type(class="form-select") }}
+            {{ form.type(class="form-select", id="transactionType") }}
         </div>
 
         <div class="mb-3">
             {{ form.category.label(class="form-label") }}
-            {{ form.category(class="form-select") }}
+            {{ form.category(class="form-select", id="transactionCategory") }}
         </div>
 
         <div class="mb-3">
@@ -41,20 +44,89 @@
 
         <div class="mb-3">
             {{ form.note.label(class="form-label") }}
-            {{ form.note(class="form-control", rows=4) }}
+            {{ form.note(class="form-control", rows="4") }}
         </div>
 
-        <button class="btn btn-primary">
-            Update Transaction
-        </button>
+        {{ form.submit(
+            class="btn btn-success"
+        ) }}
 
         <a href="{{ url_for('transactions.index') }}"
-           class="btn btn-secondary">
+           class="btn btn-outline-secondary ms-2">
             Cancel
         </a>
 
     </form>
 
 </div>
+
+
+<script>
+
+    const transactionType =
+        document.getElementById("transactionType");
+
+    const transactionCategory =
+        document.getElementById("transactionCategory");
+
+    const categoryTypes =
+        {{ category_types | tojson }};
+
+    const selectedCategory =
+        "{{ form.category.data or '' }}";
+
+
+    function updateCategories() {
+
+        const selectedType =
+            transactionType.value;
+
+        transactionCategory.innerHTML = "";
+
+        const defaultOption =
+            document.createElement("option");
+
+        defaultOption.value = "";
+        defaultOption.textContent =
+            "Select Category";
+
+        transactionCategory.appendChild(
+            defaultOption
+        );
+
+
+        Object.entries(categoryTypes).forEach(
+            ([name, type]) => {
+
+                if (type === selectedType) {
+
+                    const option =
+                        document.createElement("option");
+
+                    option.value = name;
+                    option.textContent = name;
+
+                    if (name === selectedCategory) {
+                        option.selected = true;
+                    }
+
+                    transactionCategory.appendChild(
+                        option
+                    );
+                }
+
+            }
+        );
+    }
+
+
+    transactionType.addEventListener(
+        "change",
+        updateCategories
+    );
+
+    updateCategories();
+
+</script>
 
 {% endblock %}

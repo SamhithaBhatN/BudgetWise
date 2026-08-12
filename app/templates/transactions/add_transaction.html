@@ -26,12 +26,12 @@
 
         <div class="mb-3">
             {{ form.type.label(class="form-label") }}
-            {{ form.type(class="form-select") }}
+            {{ form.type(class="form-select", id="transactionType") }}
         </div>
 
         <div class="mb-3">
             {{ form.category.label(class="form-label") }}
-            {{ form.category(class="form-select") }}
+            {{ form.category(class="form-select", id="transactionCategory") }}
         </div>
 
         <div class="mb-3">
@@ -49,5 +49,48 @@
     </form>
 
 </div>
+
+<script>
+    const transactionType = document.getElementById("transactionType");
+    const transactionCategory = document.getElementById("transactionCategory");
+
+    const categoryTypes = {{ category_types | tojson }};
+
+    function updateCategories() {
+
+        const selectedType = transactionType.value;
+
+        const currentCategory = transactionCategory.value;
+
+        transactionCategory.innerHTML = "";
+
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "Select Category";
+        transactionCategory.appendChild(defaultOption);
+
+        Object.entries(categoryTypes).forEach(([name, type]) => {
+
+            if (type === selectedType) {
+
+                const option = document.createElement("option");
+
+                option.value = name;
+                option.textContent = name;
+
+                if (name === currentCategory) {
+                    option.selected = true;
+                }
+
+                transactionCategory.appendChild(option);
+            }
+
+        });
+    }
+
+    transactionType.addEventListener("change", updateCategories);
+
+    updateCategories();
+</script>
 
 {% endblock %}

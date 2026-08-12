@@ -4,52 +4,308 @@
 
 {% block content %}
 
-<div class="container py-5">
+<div class="dashboard-page">
 
-    <div class="mb-4">
-        <h2>Welcome, {{ user.full_name }} 👋</h2>
-        <p class="text-muted">
-            Here's an overview of your finances.
-        </p>
-    </div>
+    <div class="container py-5">
 
-    <div class="row g-4">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header mb-5">
+            <div>
+                <h2 class="dashboard-title">
+                    Welcome, {{ current_user.full_name }} 👋
+                </h2>
 
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h6>Total Balance</h6>
-                    <h3 class="text-success">₹0.00</h3>
-                </div>
+                <p class="dashboard-subtitle mb-0">
+                    Here's an overview of your finances.
+                </p>
             </div>
+
+            <a href="{{ url_for('transactions.add_transaction') }}"
+               class="btn btn-success dashboard-add-btn">
+                <i class="bi bi-plus-lg"></i>
+                Add Transaction
+            </a>
         </div>
 
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h6>Income</h6>
-                    <h3 class="text-primary">₹0.00</h3>
+
+        <!-- Summary Cards -->
+        <div class="row g-4">
+
+            <!-- Balance -->
+            <div class="col-xl-3 col-md-6">
+
+                <div class="dashboard-card balance-card">
+
+                    <div class="card-icon balance-icon">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+
+                    <div class="card-content">
+
+                        <p class="card-label">
+                            Total Balance
+                        </p>
+
+                        <h3>
+                            ₹{{ "%.2f"|format(net_balance) }}
+                        </h3>
+
+                        <small>
+                            Available balance
+                        </small>
+
+                    </div>
+
                 </div>
+
             </div>
+
+
+            <!-- Income -->
+            <div class="col-xl-3 col-md-6">
+
+                <div class="dashboard-card income-card">
+
+                    <div class="card-icon income-icon">
+                        <i class="bi bi-arrow-down-left"></i>
+                    </div>
+
+                    <div class="card-content">
+
+                        <p class="card-label">
+                            Total Income
+                        </p>
+
+                        <h3>
+                            ₹{{ "%.2f"|format(total_income) }}
+                        </h3>
+
+                        <small>
+                            Money received
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Expenses -->
+            <div class="col-xl-3 col-md-6">
+
+                <div class="dashboard-card expense-card">
+
+                    <div class="card-icon expense-icon">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </div>
+
+                    <div class="card-content">
+
+                        <p class="card-label">
+                            Total Expenses
+                        </p>
+
+                        <h3>
+                            ₹{{ "%.2f"|format(total_expense) }}
+                        </h3>
+
+                        <small>
+                            Money spent
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Savings -->
+            <div class="col-xl-3 col-md-6">
+
+                <div class="dashboard-card savings-card">
+
+                    <div class="card-icon savings-icon">
+                        <i class="bi bi-piggy-bank"></i>
+                    </div>
+
+                    <div class="card-content">
+
+                        <p class="card-label">
+                            Savings
+                        </p>
+
+                        <h3>
+                            ₹{{ "%.2f"|format(net_balance) }}
+                        </h3>
+
+                        <small>
+                            Current savings
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h6>Expenses</h6>
-                    <h3 class="text-danger">₹0.00</h3>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h6>Savings</h6>
-                    <h3 class="text-info">₹0.00</h3>
+        <!-- Recent Transactions -->
+        <section class="recent-transactions-section mt-5">
+
+            <div class="section-header">
+
+                <div>
+                    <h3>
+                        Recent Transactions
+                    </h3>
+
+                    <p>
+                        Your latest financial activities
+                    </p>
                 </div>
+
+                <a href="{{ url_for('transactions.index') }}"
+                   class="btn btn-outline-success">
+                    View All
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
             </div>
-        </div>
+
+
+            {% if recent_transactions %}
+
+                <div class="transactions-card">
+
+                    <div class="table-responsive">
+
+                        <table class="table transactions-table mb-0">
+
+                            <thead>
+                                <tr>
+                                    <th>Transaction</th>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                {% for transaction in recent_transactions %}
+
+                                    <tr>
+
+                                        <td>
+                                            <div class="transaction-name">
+                                                <span class="transaction-icon">
+                                                    {% if transaction.type == "Income" %}
+                                                        <i class="bi bi-arrow-down-left"></i>
+                                                    {% else %}
+                                                        <i class="bi bi-arrow-up-right"></i>
+                                                    {% endif %}
+                                                </span>
+
+                                                <strong>
+                                                    {{ transaction.title }}
+                                                </strong>
+                                            </div>
+                                        </td>
+
+
+                                        <td>
+                                            <span class="category-text">
+                                                {{ transaction.category }}
+                                            </span>
+                                        </td>
+
+
+                                        <td>
+
+                                            {% if transaction.type == "Income" %}
+
+                                                <span class="transaction-badge income-badge">
+                                                    Income
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="transaction-badge expense-badge">
+                                                    Expense
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <td>
+                                            <span class="date-text">
+                                                {{ transaction.date.strftime("%d %b %Y") }}
+                                            </span>
+                                        </td>
+
+
+                                        <td class="text-end">
+
+                                            {% if transaction.type == "Income" %}
+
+                                                <span class="transaction-amount income-amount">
+                                                    +₹{{ "%.2f"|format(transaction.amount) }}
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="transaction-amount expense-amount">
+                                                    -₹{{ "%.2f"|format(transaction.amount) }}
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-transactions">
+
+                    <div class="empty-icon">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+
+                    <h5>No transactions yet</h5>
+
+                    <p>
+                        Start tracking your finances by adding your first transaction.
+                    </p>
+
+                    <a href="{{ url_for('transactions.add_transaction') }}"
+                       class="btn btn-success">
+                        <i class="bi bi-plus-lg"></i>
+                        Add Transaction
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </section>
 
     </div>
 

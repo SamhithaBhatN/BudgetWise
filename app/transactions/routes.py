@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 from app.transactions import transactions
 from app.transactions.forms import TransactionForm
 from app.models.transaction import Transaction
+from app.models.category import Category
 from app.extensions import db
 
 @transactions.route("/")
@@ -28,7 +29,40 @@ def add_transaction():
 
     form = TransactionForm()
 
+    user_categories = (
+        Category.query
+        .filter_by(user_id=current_user.id)
+        .order_by(Category.name.asc())
+        .all()
+    )
+
+    form.set_categories(user_categories)
+
+    category_types = {
+        category.name: category.type
+        for category in user_categories
+    }
+
     if form.validate_on_submit():
+
+        selected_category = Category.query.filter_by(
+            user_id=current_user.id,
+            name=form.category.data,
+            type=form.type.data
+        ).first()
+
+        if not selected_category:
+
+            flash(
+                "Invalid category selected for this transaction type.",
+                "danger"
+            )
+
+            return render_template(
+                "transactions/add_transaction.html",
+                form=form,
+                category_types=category_types
+            )
 
         transaction = Transaction(
             title=form.title.data,
@@ -49,7 +83,8 @@ def add_transaction():
 
     return render_template(
         "transactions/add_transaction.html",
-        form=form
+        form=form,
+        category_types=category_types
     )
 
 @transactions.route("/edit/<int:id>", methods=["GET", "POST"])
@@ -63,7 +98,40 @@ def edit_transaction(id):
 
     form = TransactionForm(obj=transaction)
 
+    user_categories = (
+        Category.query
+        .filter_by(user_id=current_user.id)
+        .order_by(Category.name.asc())
+        .all()
+    )
+
+    form.set_categories(user_categories)
+
+    category_types = {
+        category.name: category.type
+        for category in user_categories
+    }
+
     if form.validate_on_submit():
+
+        selected_category = Category.query.filter_by(
+            user_id=current_user.id,
+            name=form.category.data,
+            type=form.type.data
+        ).first()
+
+        if not selected_category:
+
+            flash(
+                "Invalid category selected for this transaction type.",
+                "danger"
+            )
+
+            return render_template(
+                "transactions/edit_transaction.html",
+                form=form,
+                category_types=category_types
+            )
 
         transaction.title = form.title.data
         transaction.amount = form.amount.data
@@ -80,7 +148,8 @@ def edit_transaction(id):
 
     return render_template(
         "transactions/edit_transaction.html",
-        form=form
+        form=form,
+        category_types=category_types
     )
 
 @transactions.route("/delete/<int:id>", methods=["POST"])

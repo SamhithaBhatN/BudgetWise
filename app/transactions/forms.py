@@ -37,18 +37,7 @@ class TransactionForm(FlaskForm):
 
     category = SelectField(
         "Category",
-        choices=[
-            ("Salary", "Salary"),
-            ("Freelance", "Freelance"),
-            ("Food", "Food"),
-            ("Transport", "Transport"),
-            ("Shopping", "Shopping"),
-            ("Bills", "Bills"),
-            ("Entertainment", "Entertainment"),
-            ("Health", "Health"),
-            ("Education", "Education"),
-            ("Other", "Other")
-        ],
+        choices=[],
         validators=[DataRequired()]
     )
 
@@ -61,3 +50,10 @@ class TransactionForm(FlaskForm):
     note = TextAreaField("Note")
 
     submit = SubmitField("Save Transaction")
+
+    def set_categories(self, categories):
+
+        self.category.choices = [
+            (category.name, category.name)
+            for category in categories
+        ]
