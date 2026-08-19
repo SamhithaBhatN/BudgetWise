@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Budget - BudgetWise{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4">
+
+                    <h3 class="fw-bold mb-4">
+                        Edit Budget
+                    </h3>
+
+                    <form method="POST">
+
+                        {{ form.hidden_tag() }}
+
+                        <!-- Category -->
+                        <div class="mb-3">
+
+                            {{ form.category_id.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {{ form.category_id(
+                                class="form-select"
+                            ) }}
+
+                            {% for error in form.category_id.errors %}
+
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                        <!-- Amount -->
+                        <div class="mb-3">
+
+                            {{ form.amount.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    ₹
+                                </span>
+
+                                {{ form.amount(
+                                    class="form-control"
+                                ) }}
+
+                            </div>
+
+                            {% for error in form.amount.errors %}
+
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                        <!-- Month -->
+                        <div class="mb-3">
+
+                            {{ form.month.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {{ form.month(
+                                class="form-select"
+                            ) }}
+
+                            {% for error in form.month.errors %}
+
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                        <!-- Year -->
+                        <div class="mb-4">
+
+                            {{ form.year.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {{ form.year(
+                                class="form-control"
+                            ) }}
+
+                            {% for error in form.year.errors %}
+
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                        <div class="d-flex gap-2">
+
+                            {{ form.submit(
+                                value="Update Budget",
+                                class="btn btn-success"
+                            ) }}
+
+                            <a href="{{ url_for('budgets.index') }}"
+                               class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

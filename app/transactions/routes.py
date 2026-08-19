@@ -1,3 +1,5 @@
+from datetime import date
+
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 
@@ -6,6 +8,7 @@ from app.transactions.forms import TransactionForm
 from app.models.transaction import Transaction
 from app.models.category import Category
 from app.extensions import db
+
 
 @transactions.route("/")
 @login_required
@@ -22,6 +25,7 @@ def index():
         "transactions/index.html",
         transactions=transactions_list
     )
+
 
 @transactions.route("/add", methods=["GET", "POST"])
 @login_required
@@ -43,6 +47,8 @@ def add_transaction():
         for category in user_categories
     }
 
+    today = date.today().isoformat()
+
     if form.validate_on_submit():
 
         selected_category = Category.query.filter_by(
@@ -61,7 +67,8 @@ def add_transaction():
             return render_template(
                 "transactions/add_transaction.html",
                 form=form,
-                category_types=category_types
+                category_types=category_types,
+                today=today
             )
 
         transaction = Transaction(
@@ -84,8 +91,10 @@ def add_transaction():
     return render_template(
         "transactions/add_transaction.html",
         form=form,
-        category_types=category_types
+        category_types=category_types,
+        today=today
     )
+
 
 @transactions.route("/edit/<int:id>", methods=["GET", "POST"])
 @login_required
@@ -112,6 +121,8 @@ def edit_transaction(id):
         for category in user_categories
     }
 
+    today = date.today().isoformat()
+
     if form.validate_on_submit():
 
         selected_category = Category.query.filter_by(
@@ -130,7 +141,8 @@ def edit_transaction(id):
             return render_template(
                 "transactions/edit_transaction.html",
                 form=form,
-                category_types=category_types
+                category_types=category_types,
+                today=today
             )
 
         transaction.title = form.title.data
@@ -149,8 +161,10 @@ def edit_transaction(id):
     return render_template(
         "transactions/edit_transaction.html",
         form=form,
-        category_types=category_types
+        category_types=category_types,
+        today=today
     )
+
 
 @transactions.route("/delete/<int:id>", methods=["POST"])
 @login_required

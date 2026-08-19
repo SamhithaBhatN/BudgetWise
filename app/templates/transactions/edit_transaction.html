@@ -7,54 +7,144 @@
 <div class="container py-5">
 
     <div class="mb-4">
-        <h2 class="fw-bold">Edit Transaction</h2>
+
+        <h2 class="fw-bold">
+            Edit Transaction
+        </h2>
+
         <p class="text-muted">
             Update your transaction details.
         </p>
+
     </div>
+
 
     <form method="POST">
 
         {{ form.hidden_tag() }}
 
+
+        <!-- Title -->
         <div class="mb-3">
+
             {{ form.title.label(class="form-label") }}
+
             {{ form.title(class="form-control") }}
+
+            {% for error in form.title.errors %}
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
         </div>
 
+
+        <!-- Amount -->
         <div class="mb-3">
+
             {{ form.amount.label(class="form-label") }}
+
             {{ form.amount(class="form-control") }}
+
+            {% for error in form.amount.errors %}
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
         </div>
 
+
+        <!-- Transaction Type -->
         <div class="mb-3">
+
             {{ form.type.label(class="form-label") }}
-            {{ form.type(class="form-select", id="transactionType") }}
+
+            {{ form.type(
+                class="form-select",
+                id="transactionType"
+            ) }}
+
+            {% for error in form.type.errors %}
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
         </div>
 
+
+        <!-- Category -->
         <div class="mb-3">
+
             {{ form.category.label(class="form-label") }}
-            {{ form.category(class="form-select", id="transactionCategory") }}
+
+            {{ form.category(
+                class="form-select",
+                id="transactionCategory"
+            ) }}
+
+            {% for error in form.category.errors %}
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
         </div>
 
+
+        <!-- Date -->
         <div class="mb-3">
+
             {{ form.date.label(class="form-label") }}
-            {{ form.date(class="form-control") }}
+
+            {{ form.date(
+                class="form-control",
+                max=today
+            ) }}
+
+            {% for error in form.date.errors %}
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
         </div>
 
+
+        <!-- Note -->
         <div class="mb-3">
+
             {{ form.note.label(class="form-label") }}
-            {{ form.note(class="form-control", rows="4") }}
+
+            {{ form.note(
+                class="form-control",
+                rows="4"
+            ) }}
+
+            {% for error in form.note.errors %}
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
         </div>
 
-        {{ form.submit(
-            class="btn btn-success"
-        ) }}
 
-        <a href="{{ url_for('transactions.index') }}"
-           class="btn btn-outline-secondary ms-2">
-            Cancel
-        </a>
+        <div class="d-flex gap-2">
+
+            {{ form.submit(
+                class="btn btn-success",
+                value="Update Transaction"
+            ) }}
+
+            <a href="{{ url_for('transactions.index') }}"
+               class="btn btn-outline-secondary">
+                Cancel
+            </a>
+
+        </div>
 
     </form>
 
@@ -62,7 +152,6 @@
 
 
 <script>
-
     const transactionType =
         document.getElementById("transactionType");
 
@@ -73,7 +162,7 @@
         {{ category_types | tojson }};
 
     const selectedCategory =
-        "{{ form.category.data or '' }}";
+        {{ (form.category.data or "") | tojson }};
 
 
     function updateCategories() {
@@ -126,7 +215,6 @@
     );
 
     updateCategories();
-
 </script>
 
 {% endblock %}

@@ -6,43 +6,127 @@
 
 <div class="container py-5">
 
-    <h2 class="mb-4">
-        Add Transaction
-    </h2>
+    <div class="mb-4">
+        <h2 class="fw-bold">
+            Add Transaction
+        </h2>
+
+        <p class="text-muted">
+            Record your income or expenses.
+        </p>
+    </div>
 
     <form method="POST">
 
         {{ form.hidden_tag() }}
 
+        <!-- Title -->
         <div class="mb-3">
+
             {{ form.title.label(class="form-label") }}
+
             {{ form.title(class="form-control") }}
+
+            {% for error in form.title.errors %}
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
         </div>
 
+
+        <!-- Amount -->
         <div class="mb-3">
+
             {{ form.amount.label(class="form-label") }}
+
             {{ form.amount(class="form-control") }}
+
+            {% for error in form.amount.errors %}
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
         </div>
 
+
+        <!-- Transaction Type -->
         <div class="mb-3">
+
             {{ form.type.label(class="form-label") }}
-            {{ form.type(class="form-select", id="transactionType") }}
+
+            {{ form.type(
+                class="form-select",
+                id="transactionType"
+            ) }}
+
+            {% for error in form.type.errors %}
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
         </div>
 
+
+        <!-- Category -->
         <div class="mb-3">
+
             {{ form.category.label(class="form-label") }}
-            {{ form.category(class="form-select", id="transactionCategory") }}
+
+            {{ form.category(
+                class="form-select",
+                id="transactionCategory"
+            ) }}
+
+            {% for error in form.category.errors %}
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
         </div>
 
+
+        <!-- Date -->
         <div class="mb-3">
+
             {{ form.date.label(class="form-label") }}
-            {{ form.date(class="form-control") }}
+
+            {{ form.date(
+                class="form-control",
+                max=today
+            ) }}
+
+            {% for error in form.date.errors %}
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
         </div>
 
+
+        <!-- Note -->
         <div class="mb-3">
+
             {{ form.note.label(class="form-label") }}
-            {{ form.note(class="form-control", rows="4") }}
+
+            {{ form.note(
+                class="form-control",
+                rows="4"
+            ) }}
+
+            {% for error in form.note.errors %}
+                <div class="text-danger small mt-1">
+                    {{ error }}
+                </div>
+            {% endfor %}
+
         </div>
+
 
         {{ form.submit(class="btn btn-success") }}
 
@@ -50,45 +134,69 @@
 
 </div>
 
-<script>
-    const transactionType = document.getElementById("transactionType");
-    const transactionCategory = document.getElementById("transactionCategory");
 
-    const categoryTypes = {{ category_types | tojson }};
+<script>
+    const transactionType =
+        document.getElementById("transactionType");
+
+    const transactionCategory =
+        document.getElementById("transactionCategory");
+
+    const categoryTypes =
+        {{ category_types | tojson }};
+
 
     function updateCategories() {
 
-        const selectedType = transactionType.value;
+        const selectedType =
+            transactionType.value;
 
-        const currentCategory = transactionCategory.value;
+        const currentCategory =
+            transactionCategory.value;
 
         transactionCategory.innerHTML = "";
 
-        const defaultOption = document.createElement("option");
+        const defaultOption =
+            document.createElement("option");
+
         defaultOption.value = "";
-        defaultOption.textContent = "Select Category";
-        transactionCategory.appendChild(defaultOption);
+        defaultOption.textContent =
+            "Select Category";
 
-        Object.entries(categoryTypes).forEach(([name, type]) => {
+        transactionCategory.appendChild(
+            defaultOption
+        );
 
-            if (type === selectedType) {
 
-                const option = document.createElement("option");
+        Object.entries(categoryTypes).forEach(
+            ([name, type]) => {
 
-                option.value = name;
-                option.textContent = name;
+                if (type === selectedType) {
 
-                if (name === currentCategory) {
-                    option.selected = true;
+                    const option =
+                        document.createElement("option");
+
+                    option.value = name;
+                    option.textContent = name;
+
+                    if (name === currentCategory) {
+                        option.selected = true;
+                    }
+
+                    transactionCategory.appendChild(
+                        option
+                    );
                 }
 
-                transactionCategory.appendChild(option);
             }
-
-        });
+        );
     }
 
-    transactionType.addEventListener("change", updateCategories);
+
+    transactionType.addEventListener(
+        "change",
+        updateCategories
+    );
 
     updateCategories();
 </script>
