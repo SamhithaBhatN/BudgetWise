@@ -32,4 +32,7 @@ def create_app():
     from app.budgets import budgets
     flask_app.register_blueprint(budgets)
 
+    from app.goals import goals
+    flask_app.register_blueprint(goals)
+    
     return flask_app
