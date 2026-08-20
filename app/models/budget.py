@@ -27,6 +27,11 @@ class Budget(db.Model):
         "Category",
         backref="budgets"
     )
+
+    user = db.relationship(
+        "User",
+        backref="budgets"
+    )
     
     amount = db.Column(
         db.Numeric(12, 2),

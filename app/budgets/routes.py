@@ -2,11 +2,13 @@ from datetime import date
 
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
+from sqlalchemy import func
 
 from app.budgets import budgets
 from app.budgets.forms import BudgetForm
 from app.models.budget import Budget
 from app.models.category import Category
+from app.models.transaction import Transaction
 from app.extensions import db
 
 
@@ -16,6 +18,7 @@ def index():
 
     form = BudgetForm()
 
+    # Get only the current user's expense categories
     expense_categories = (
         Category.query
         .filter_by(
@@ -26,11 +29,13 @@ def index():
         .all()
     )
 
+    # Populate category choices
     form.category_id.choices = [
         (category.id, category.name)
         for category in expense_categories
     ]
 
+    # Get all budgets belonging to the current user
     budgets_list = (
         Budget.query
         .filter_by(user_id=current_user.id)
@@ -41,6 +46,62 @@ def index():
         .all()
     )
 
+    # Calculate spending information for each budget
+    budget_data = []
+
+    for budget in budgets_list:
+
+        spent = (
+            db.session.query(
+                func.coalesce(
+                    func.sum(Transaction.amount),
+                    0
+                )
+            )
+            .filter(
+                Transaction.user_id == current_user.id,
+                Transaction.type == "Expense",
+                Transaction.category == budget.category.name
+            )
+            .filter(
+                func.extract(
+                    "month",
+                    Transaction.date
+                ) == budget.month,
+
+                func.extract(
+                    "year",
+                    Transaction.date
+                ) == budget.year
+            )
+            .scalar()
+        )
+
+        spent = float(spent or 0)
+
+        budget_amount = float(budget.amount)
+
+        remaining = budget_amount - spent
+
+        percentage = (
+            (spent / budget_amount) * 100
+            if budget_amount > 0
+            else 0
+        )
+
+        budget_data.append(
+            {
+                "budget": budget,
+                "spent": spent,
+                "remaining": remaining,
+                "percentage": percentage
+            }
+        )
+
+    # ----------------------------------------
+    # Add Budget
+    # ----------------------------------------
+
     if form.validate_on_submit():
 
         today = date.today()
@@ -48,7 +109,7 @@ def index():
         selected_year = form.year.data
         selected_month = form.month.data
 
-        # Prevent creating budgets for past months.
+        # Prevent budgets for past months
         if (
             selected_year < today.year
             or (
@@ -56,6 +117,7 @@ def index():
                 and selected_month < today.month
             )
         ):
+
             flash(
                 "You cannot create a budget for a month that has already passed.",
                 "danger"
@@ -64,11 +126,10 @@ def index():
             return render_template(
                 "budgets/index.html",
                 form=form,
-                budgets=budgets_list
+                budgets=budget_data
             )
 
-        # Prevent duplicate budgets for the same
-        # user, category, month, and year.
+        # Prevent duplicate budgets
         existing_budget = Budget.query.filter_by(
             user_id=current_user.id,
             category_id=form.category_id.data,
@@ -86,9 +147,10 @@ def index():
             return render_template(
                 "budgets/index.html",
                 form=form,
-                budgets=budgets_list
+                budgets=budget_data
             )
 
+        # Create budget
         budget = Budget(
             user_id=current_user.id,
             category_id=form.category_id.data,
@@ -100,28 +162,43 @@ def index():
         db.session.add(budget)
         db.session.commit()
 
-        flash("Budget added successfully!", "success")
+        flash(
+            "Budget added successfully!",
+            "success"
+        )
 
-        return redirect(url_for("budgets.index"))
+        return redirect(
+            url_for("budgets.index")
+        )
 
     return render_template(
         "budgets/index.html",
         form=form,
-        budgets=budgets_list
+        budgets=budget_data
     )
 
 
-@budgets.route("/edit/<int:id>", methods=["GET", "POST"])
+# ==========================================
+# Edit Budget
+# ==========================================
+
+@budgets.route(
+    "/edit/<int:id>",
+    methods=["GET", "POST"]
+)
 @login_required
 def edit_budget(id):
 
+    # Find only the current user's budget
     budget = Budget.query.filter_by(
         id=id,
         user_id=current_user.id
     ).first_or_404()
 
+    # Pre-fill form
     form = BudgetForm(obj=budget)
 
+    # Get current user's expense categories
     expense_categories = (
         Category.query
         .filter_by(
@@ -132,6 +209,7 @@ def edit_budget(id):
         .all()
     )
 
+    # Populate category choices
     form.category_id.choices = [
         (category.id, category.name)
         for category in expense_categories
@@ -144,7 +222,7 @@ def edit_budget(id):
         selected_year = form.year.data
         selected_month = form.month.data
 
-        # Prevent moving a budget to a past month.
+        # Prevent moving budget to past month
         if (
             selected_year < today.year
             or (
@@ -152,6 +230,7 @@ def edit_budget(id):
                 and selected_month < today.month
             )
         ):
+
             flash(
                 "You cannot set a budget for a month that has already passed.",
                 "danger"
@@ -162,8 +241,8 @@ def edit_budget(id):
                 form=form
             )
 
-        # Prevent duplicate budgets while excluding
-        # the budget currently being edited.
+        # Prevent duplicates while excluding
+        # the budget currently being edited
         duplicate_budget = Budget.query.filter(
             Budget.user_id == current_user.id,
             Budget.category_id == form.category_id.data,
@@ -184,6 +263,7 @@ def edit_budget(id):
                 form=form
             )
 
+        # Update budget
         budget.category_id = form.category_id.data
         budget.amount = form.amount.data
         budget.month = form.month.data
@@ -191,9 +271,14 @@ def edit_budget(id):
 
         db.session.commit()
 
-        flash("Budget updated successfully!", "success")
+        flash(
+            "Budget updated successfully!",
+            "success"
+        )
 
-        return redirect(url_for("budgets.index"))
+        return redirect(
+            url_for("budgets.index")
+        )
 
     return render_template(
         "budgets/edit_budget.html",
@@ -201,10 +286,18 @@ def edit_budget(id):
     )
 
 
-@budgets.route("/delete/<int:id>", methods=["POST"])
+# ==========================================
+# Delete Budget
+# ==========================================
+
+@budgets.route(
+    "/delete/<int:id>",
+    methods=["POST"]
+)
 @login_required
 def delete_budget(id):
 
+    # Find only the current user's budget
     budget = Budget.query.filter_by(
         id=id,
         user_id=current_user.id
@@ -213,6 +306,11 @@ def delete_budget(id):
     db.session.delete(budget)
     db.session.commit()
 
-    flash("Budget deleted successfully!", "success")
+    flash(
+        "Budget deleted successfully!",
+        "success"
+    )
 
-    return redirect(url_for("budgets.index"))
+    return redirect(
+        url_for("budgets.index")
+    )
