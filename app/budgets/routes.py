@@ -1,4 +1,5 @@
 from datetime import date
+import calendar
 
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
@@ -18,7 +19,10 @@ def index():
 
     form = BudgetForm()
 
-    # Get only the current user's expense categories
+    # ----------------------------------------
+    # Expense Categories
+    # ----------------------------------------
+
     expense_categories = (
         Category.query
         .filter_by(
@@ -29,13 +33,16 @@ def index():
         .all()
     )
 
-    # Populate category choices
     form.category_id.choices = [
         (category.id, category.name)
         for category in expense_categories
     ]
 
-    # Get all budgets belonging to the current user
+
+    # ----------------------------------------
+    # Get User Budgets
+    # ----------------------------------------
+
     budgets_list = (
         Budget.query
         .filter_by(user_id=current_user.id)
@@ -46,7 +53,11 @@ def index():
         .all()
     )
 
-    # Calculate spending information for each budget
+
+    # ----------------------------------------
+    # Calculate Budget Progress
+    # ----------------------------------------
+
     budget_data = []
 
     for budget in budgets_list:
@@ -89,14 +100,41 @@ def index():
             else 0
         )
 
+        month_name = calendar.month_name[budget.month]
+
         budget_data.append(
             {
                 "budget": budget,
                 "spent": spent,
                 "remaining": remaining,
-                "percentage": percentage
+                "percentage": percentage,
+                "month_name": month_name
             }
         )
+
+
+    # ----------------------------------------
+    # Overall Budget Summary
+    # ----------------------------------------
+
+    total_budget = sum(
+        float(item["budget"].amount)
+        for item in budget_data
+    )
+
+    total_spent = sum(
+        item["spent"]
+        for item in budget_data
+    )
+
+    total_remaining = total_budget - total_spent
+
+    overall_percentage = (
+        (total_spent / total_budget) * 100
+        if total_budget > 0
+        else 0
+    )
+
 
     # ----------------------------------------
     # Add Budget
@@ -109,7 +147,8 @@ def index():
         selected_year = form.year.data
         selected_month = form.month.data
 
-        # Prevent budgets for past months
+
+        # Prevent past-month budgets
         if (
             selected_year < today.year
             or (
@@ -126,8 +165,13 @@ def index():
             return render_template(
                 "budgets/index.html",
                 form=form,
-                budgets=budget_data
+                budgets=budget_data,
+                total_budget=total_budget,
+                total_spent=total_spent,
+                total_remaining=total_remaining,
+                overall_percentage=overall_percentage
             )
+
 
         # Prevent duplicate budgets
         existing_budget = Budget.query.filter_by(
@@ -147,10 +191,15 @@ def index():
             return render_template(
                 "budgets/index.html",
                 form=form,
-                budgets=budget_data
+                budgets=budget_data,
+                total_budget=total_budget,
+                total_spent=total_spent,
+                total_remaining=total_remaining,
+                overall_percentage=overall_percentage
             )
 
-        # Create budget
+
+        # Create Budget
         budget = Budget(
             user_id=current_user.id,
             category_id=form.category_id.data,
@@ -171,10 +220,19 @@ def index():
             url_for("budgets.index")
         )
 
+
+    # ----------------------------------------
+    # Render Budget Page
+    # ----------------------------------------
+
     return render_template(
         "budgets/index.html",
         form=form,
-        budgets=budget_data
+        budgets=budget_data,
+        total_budget=total_budget,
+        total_spent=total_spent,
+        total_remaining=total_remaining,
+        overall_percentage=overall_percentage
     )
 
 
@@ -189,16 +247,13 @@ def index():
 @login_required
 def edit_budget(id):
 
-    # Find only the current user's budget
     budget = Budget.query.filter_by(
         id=id,
         user_id=current_user.id
     ).first_or_404()
 
-    # Pre-fill form
     form = BudgetForm(obj=budget)
 
-    # Get current user's expense categories
     expense_categories = (
         Category.query
         .filter_by(
@@ -209,11 +264,11 @@ def edit_budget(id):
         .all()
     )
 
-    # Populate category choices
     form.category_id.choices = [
         (category.id, category.name)
         for category in expense_categories
     ]
+
 
     if form.validate_on_submit():
 
@@ -222,7 +277,8 @@ def edit_budget(id):
         selected_year = form.year.data
         selected_month = form.month.data
 
-        # Prevent moving budget to past month
+
+        # Prevent past-month budgets
         if (
             selected_year < today.year
             or (
@@ -241,8 +297,8 @@ def edit_budget(id):
                 form=form
             )
 
-        # Prevent duplicates while excluding
-        # the budget currently being edited
+
+        # Prevent duplicate budgets
         duplicate_budget = Budget.query.filter(
             Budget.user_id == current_user.id,
             Budget.category_id == form.category_id.data,
@@ -263,7 +319,8 @@ def edit_budget(id):
                 form=form
             )
 
-        # Update budget
+
+        # Update Budget
         budget.category_id = form.category_id.data
         budget.amount = form.amount.data
         budget.month = form.month.data
@@ -279,6 +336,7 @@ def edit_budget(id):
         return redirect(
             url_for("budgets.index")
         )
+
 
     return render_template(
         "budgets/edit_budget.html",
@@ -297,7 +355,6 @@ def edit_budget(id):
 @login_required
 def delete_budget(id):
 
-    # Find only the current user's budget
     budget = Budget.query.filter_by(
         id=id,
         user_id=current_user.id

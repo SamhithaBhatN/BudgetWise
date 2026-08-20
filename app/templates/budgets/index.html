@@ -6,7 +6,10 @@
 
 <div class="container py-5">
 
+    <!-- ================================= -->
     <!-- Page Header -->
+    <!-- ================================= -->
+
     <div class="mb-5">
 
         <h2 class="fw-bold">
@@ -20,7 +23,122 @@
     </div>
 
 
+    <!-- ================================= -->
+    <!-- Budget Summary -->
+    <!-- ================================= -->
+
+    <div class="row g-4 mb-5">
+
+        <!-- Total Budget -->
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="small text-muted mb-2">
+                        Total Budget
+                    </div>
+
+                    <h3 class="fw-bold mb-0">
+                        ₹{{ "{:,.2f}".format(total_budget) }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Total Spent -->
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="small text-muted mb-2">
+                        Total Spent
+                    </div>
+
+                    <h3 class="fw-bold text-danger mb-0">
+                        ₹{{ "{:,.2f}".format(total_spent) }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Total Remaining -->
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="small text-muted mb-2">
+                        Remaining
+                    </div>
+
+                    <h3 class="fw-bold
+                        {% if total_remaining >= 0 %}
+                            text-success
+                        {% else %}
+                            text-danger
+                        {% endif %}
+                    ">
+                        ₹{{ "{:,.2f}".format(total_remaining) }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Overall Usage -->
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="small text-muted mb-2">
+                        Overall Usage
+                    </div>
+
+                    <h3 class="fw-bold
+                        {% if overall_percentage > 100 %}
+                            text-danger
+                        {% elif overall_percentage >= 80 %}
+                            text-warning
+                        {% else %}
+                            text-success
+                        {% endif %}
+                    ">
+                        {{ "%.1f"|format(overall_percentage) }}%
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- Main Budget Section -->
+    <!-- ================================= -->
+
     <div class="row g-4">
+
 
         <!-- ================================= -->
         <!-- Add Budget -->
@@ -35,6 +153,7 @@
                     <h4 class="fw-bold mb-4">
                         Add Budget
                     </h4>
+
 
                     <form method="POST">
 
@@ -139,6 +258,7 @@
                         </div>
 
 
+                        <!-- Submit -->
                         {{ form.submit(
                             class="btn btn-success w-100"
                         ) }}
@@ -161,6 +281,7 @@
             <div class="card shadow-sm border-0">
 
                 <div class="card-body p-4">
+
 
                     <!-- Header -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -187,9 +308,14 @@
                                 {% set remaining = item.remaining %}
                                 {% set percentage = item.percentage %}
 
+
                                 <div class="list-group-item px-0 py-4">
 
+
+                                    <!-- ============================== -->
                                     <!-- Budget Header -->
+                                    <!-- ============================== -->
+
                                     <div class="d-flex justify-content-between align-items-start">
 
                                         <div>
@@ -199,7 +325,7 @@
                                             </h5>
 
                                             <small class="text-muted">
-                                                {{ budget.month }}/{{ budget.year }}
+                                                {{ item.month_name }} {{ budget.year }}
                                             </small>
 
                                         </div>
@@ -248,8 +374,12 @@
                                     </div>
 
 
-                                    <!-- Summary -->
+                                    <!-- ============================== -->
+                                    <!-- Budget Summary -->
+                                    <!-- ============================== -->
+
                                     <div class="row g-3 mt-3">
+
 
                                         <!-- Budget -->
                                         <div class="col-4">
@@ -303,14 +433,19 @@
                                     </div>
 
 
-                                    <!-- Progress Bar -->
+                                    <!-- ============================== -->
+                                    <!-- Progress -->
+                                    <!-- ============================== -->
+
                                     <div class="mt-4">
+
 
                                         <div class="d-flex justify-content-between align-items-center mb-2">
 
                                             <span class="small text-muted">
                                                 Budget usage
                                             </span>
+
 
                                             <span class="small fw-semibold
                                                 {% if percentage > 100 %}
@@ -352,7 +487,7 @@
                                         </div>
 
 
-                                        <!-- Warning -->
+                                        <!-- Over Budget -->
                                         {% if percentage > 100 %}
 
                                             <div class="small text-danger mt-2">
@@ -364,6 +499,8 @@
 
                                             </div>
 
+
+                                        <!-- Approaching Budget -->
                                         {% elif percentage >= 80 %}
 
                                             <div class="small text-warning mt-2">
@@ -386,6 +523,7 @@
 
 
                     {% else %}
+
 
                         <!-- Empty State -->
                         <div class="text-center py-5">
