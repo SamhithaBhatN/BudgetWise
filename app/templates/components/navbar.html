@@ -2,144 +2,314 @@
 
     <div class="container">
 
+        <!-- ================================= -->
+        <!-- Brand -->
+        <!-- ================================= -->
+
         {% if current_user.is_authenticated %}
+
             <a class="navbar-brand fw-bold text-success"
-            href="{{ url_for('dashboard.home') }}">
-            💰 BudgetWise
+               href="{{ url_for('dashboard.home') }}">
+
+                💰 BudgetWise
+
             </a>
+
         {% else %}
+
             <a class="navbar-brand fw-bold text-success"
-            href="{{ url_for('main.home') }}">
-            💰 BudgetWise
+               href="{{ url_for('main.home') }}">
+
+                💰 BudgetWise
+
             </a>
+
         {% endif %}
+
+
+        <!-- ================================= -->
+        <!-- Mobile Toggle -->
+        <!-- ================================= -->
 
         <button class="navbar-toggler"
                 type="button"
                 data-bs-toggle="collapse"
-                data-bs-target="#navbarMenu">
+                data-bs-target="#navbarMenu"
+                aria-controls="navbarMenu"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+
             <span class="navbar-toggler-icon"></span>
+
         </button>
+
 
         <div class="collapse navbar-collapse" id="navbarMenu">
 
+
             {% if current_user.is_authenticated %}
 
+
+                <!-- ================================= -->
                 <!-- Logged In Menu -->
+                <!-- ================================= -->
+
                 <ul class="navbar-nav mx-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard.home') }}">
+
+                        <a class="nav-link"
+                           href="{{ url_for('dashboard.home') }}">
+
                             Dashboard
+
                         </a>
+
                     </li>
 
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('transactions.index') }}">
+
+                        <a class="nav-link"
+                           href="{{ url_for('transactions.index') }}">
+
                             Transactions
+
                         </a>
+
                     </li>
 
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('categories.index') }}">
+
+                        <a class="nav-link"
+                           href="{{ url_for('categories.index') }}">
+
                             Categories
+
                         </a>
+
                     </li>
-                    
+
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('budgets.index') }}">
+
+                        <a class="nav-link"
+                           href="{{ url_for('budgets.index') }}">
+
                             Budgets
+
                         </a>
+
                     </li>
 
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('goals.index') }}">
+
+                        <a class="nav-link"
+                           href="{{ url_for('goals.index') }}">
+
                             Goals
+
                         </a>
+
                     </li>
 
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('reports.index') }}">
+
+                        <a class="nav-link"
+                           href="{{ url_for('reports.index') }}">
+
                             Reports
+
                         </a>
+
                     </li>
 
                 </ul>
 
-                <div class="dropdown">
 
-                    <button class="btn btn-success dropdown-toggle"
-                            data-bs-toggle="dropdown">
+                <!-- ================================= -->
+                <!-- Right Side Actions -->
+                <!-- ================================= -->
 
-                        {{ current_user.full_name }}
+                <div class="d-flex align-items-center gap-3">
 
-                    </button>
 
-                    <ul class="dropdown-menu dropdown-menu-end">
+                    <!-- Notifications -->
+                    <a class="nav-link position-relative p-2"
+                       href="{{ url_for('notifications.index') }}"
+                       title="Notifications"
+                       aria-label="Notifications">
 
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                Profile
-                            </a>
-                        </li>
+                        <i class="bi bi-bell fs-5"></i>
 
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                Settings
-                            </a>
-                        </li>
 
-                        <li><hr class="dropdown-divider"></li>
+                        {% if unread_notification_count > 0 %}
 
-                        <li>
-                            <a class="dropdown-item text-danger"
-                               href="{{ url_for('auth.logout') }}">
-                                Logout
-                            </a>
-                        </li>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 
-                    </ul>
+                                {{ unread_notification_count }}
+
+                                <span class="visually-hidden">
+                                    unread notifications
+                                </span>
+
+                            </span>
+
+                        {% endif %}
+
+                    </a>
+
+
+                    <!-- Profile Dropdown -->
+                    <div class="dropdown">
+
+                        <button class="btn btn-success dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+
+                            {{ current_user.full_name }}
+
+                        </button>
+
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+
+                            <li>
+
+                                <a class="dropdown-item"
+                                   href="#">
+
+                                    Profile
+
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <a class="dropdown-item"
+                                   href="#">
+
+                                    Settings
+
+                                </a>
+
+                            </li>
+
+
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+
+
+                            <li>
+
+                                <a class="dropdown-item text-danger"
+                                   href="{{ url_for('auth.logout') }}">
+
+                                    Logout
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </div>
 
                 </div>
 
+
             {% else %}
 
+
+                <!-- ================================= -->
                 <!-- Guest Menu -->
+                <!-- ================================= -->
+
                 <ul class="navbar-nav mx-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
+
+                        <a class="nav-link"
+                           href="#features">
+
+                            Features
+
+                        </a>
+
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Pricing</a>
-                    </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+
+                        <a class="nav-link"
+                           href="#">
+
+                            Pricing
+
+                        </a>
+
                     </li>
 
+
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
+
+                        <a class="nav-link"
+                           href="#">
+
+                            About
+
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <a class="nav-link"
+                           href="#">
+
+                            Contact
+
+                        </a>
+
                     </li>
 
                 </ul>
+
+
+                <!-- ================================= -->
+                <!-- Guest Actions -->
+                <!-- ================================= -->
 
                 <div class="d-flex">
 
                     <a href="{{ url_for('auth.login') }}"
                        class="btn btn-outline-success me-2">
+
                         Login
+
                     </a>
+
 
                     <a href="{{ url_for('auth.register') }}"
                        class="btn btn-success">
+
                         Get Started
+
                     </a>
 
                 </div>
 
+
             {% endif %}
+
 
         </div>
 

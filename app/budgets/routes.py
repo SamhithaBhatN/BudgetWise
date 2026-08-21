@@ -11,6 +11,7 @@ from app.models.budget import Budget
 from app.models.category import Category
 from app.models.transaction import Transaction
 from app.extensions import db
+from app.notifications.services import generate_budget_notifications
 
 
 @budgets.route("/", methods=["GET", "POST"])
@@ -53,6 +54,8 @@ def index():
         .all()
     )
 
+    # Generate budget notifications
+    generate_budget_notifications(current_user.id)
 
     # ----------------------------------------
     # Calculate Budget Progress

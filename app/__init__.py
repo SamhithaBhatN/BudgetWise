@@ -3,16 +3,35 @@ from config import Config
 
 from app.extensions import db, migrate, login_manager
 
+from flask_login import current_user
+from app.models.notification import Notification
+
 
 def create_app():
+
     flask_app = Flask(__name__)
+
     flask_app.config.from_object(Config)
+
+    # ----------------------------------------
+    # Initialize Extensions
+    # ----------------------------------------
 
     db.init_app(flask_app)
     migrate.init_app(flask_app, db)
     login_manager.init_app(flask_app)
 
+
+    # ----------------------------------------
+    # Authentication Loader
+    # ----------------------------------------
+
     import app.auth_loader
+
+
+    # ----------------------------------------
+    # Register Blueprints
+    # ----------------------------------------
 
     from app.main import main
     flask_app.register_blueprint(main)
@@ -37,5 +56,34 @@ def create_app():
 
     from app.reports import reports
     flask_app.register_blueprint(reports)
-    
+
+    from app.notifications import notifications
+    flask_app.register_blueprint(notifications)
+
+
+    # ----------------------------------------
+    # Global Notification Count
+    # ----------------------------------------
+
+    @flask_app.context_processor
+    def inject_notification_count():
+
+        unread_notification_count = 0
+
+        if current_user.is_authenticated:
+
+            unread_notification_count = (
+                Notification.query
+                .filter_by(
+                    user_id=current_user.id,
+                    is_read=False
+                )
+                .count()
+            )
+
+        return {
+            "unread_notification_count": unread_notification_count
+        }
+
+
     return flask_app

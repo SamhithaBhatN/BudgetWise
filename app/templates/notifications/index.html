@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications - BudgetWise{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- ================================= -->
+    <!-- Page Header -->
+    <!-- ================================= -->
+
+    <div class="mb-5">
+
+        <h2 class="fw-bold">
+            Notifications
+        </h2>
+
+        <p class="text-muted mb-0">
+            Stay updated on your budgets and savings goals.
+        </p>
+
+    </div>
+
+
+    {% if notifications %}
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body p-4">
+
+                {% for notification in notifications %}
+
+                    <div class="
+                        py-3
+                        {% if not loop.last %}
+                            border-bottom
+                        {% endif %}
+                    ">
+
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+
+
+                            <!-- Notification Content -->
+                            <div class="d-flex gap-3">
+
+                                <!-- Icon -->
+                                <div class="
+                                    rounded-circle
+                                    d-flex
+                                    align-items-center
+                                    justify-content-center
+
+                                    {% if notification.type == 'budget_exceeded' %}
+                                        bg-danger-subtle text-danger
+                                    {% else %}
+                                        bg-warning-subtle text-warning
+                                    {% endif %}
+                                "
+                                style="width: 42px; height: 42px;">
+
+                                    {% if notification.type == "budget_exceeded" %}
+
+                                        <i class="bi bi-exclamation-triangle"></i>
+
+                                    {% else %}
+
+                                        <i class="bi bi-bell"></i>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- Text -->
+                                <div>
+
+                                    <h6 class="fw-semibold mb-1">
+                                        {{ notification.title }}
+                                    </h6>
+
+                                    <p class="text-muted mb-1">
+                                        {{ notification.message }}
+                                    </p>
+
+                                    <small class="text-muted">
+                                        {{ notification.created_at.strftime(
+                                            "%d %b %Y, %I:%M %p"
+                                        ) }}
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Notification Status / Action -->
+                            <div>
+
+                                {% if not notification.is_read %}
+
+                                    <form method="POST"
+                                          action="{{ url_for(
+                                              'notifications.mark_as_read',
+                                              id=notification.id
+                                          ) }}">
+
+                                        {{ form.hidden_tag() }}
+
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-success">
+
+                                            <i class="bi bi-check2"></i>
+                                            Mark as Read
+
+                                        </button>
+
+                                    </form>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary-subtle text-secondary">
+
+                                        Read
+
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+    {% else %}
+
+        <!-- ================================= -->
+        <!-- Empty State -->
+        <!-- ================================= -->
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body text-center py-5">
+
+                <div class="mb-3">
+
+                    <i class="bi bi-bell fs-1 text-muted"></i>
+
+                </div>
+
+                <h5 class="fw-semibold">
+                    No notifications
+                </h5>
+
+                <p class="text-muted mb-0">
+                    You're all caught up.
+                </p>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
