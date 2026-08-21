@@ -317,6 +317,36 @@
 
 
         <!-- ================================= -->
+        <!-- Monthly Income & Expense Trend -->
+        <!-- ================================= -->
+
+        <div class="card shadow-sm border-0 mb-4">
+
+            <div class="card-body p-4">
+
+                <h5 class="fw-bold mb-1">
+                    Monthly Income & Expense Trend
+                </h5>
+
+                <p class="text-muted small mb-4">
+                    Compare your income and expenses over the last six months.
+                </p>
+
+                <div
+                    class="mx-auto"
+                    style="max-width: 850px;"
+                >
+
+                    <canvas id="monthlyTrendChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================= -->
         <!-- Category-wise Expense Breakdown -->
         <!-- ================================= -->
 
@@ -427,7 +457,7 @@
 
         {% if report.category_expenses %}
 
-            <div class="card shadow-sm border-0">
+            <div class="card shadow-sm border-0 mb-4">
 
                 <div class="card-body p-4">
 
@@ -455,7 +485,7 @@
 
         {% else %}
 
-            <div class="card shadow-sm border-0">
+            <div class="card shadow-sm border-0 mb-4">
 
                 <div class="card-body text-center py-5">
 
@@ -484,9 +514,9 @@
 
         <script>
 
-            /*
-             * Income vs Expense Bar Chart
-             */
+            /* ---------------------------------
+               Income vs Expense Bar Chart
+            --------------------------------- */
 
             const incomeExpenseCanvas =
                 document.getElementById("incomeExpenseChart");
@@ -515,6 +545,7 @@
                     },
 
                     options: {
+
                         responsive: true,
 
                         maintainAspectRatio: true,
@@ -522,13 +553,20 @@
                         scales: {
 
                             y: {
+
                                 beginAtZero: true,
 
                                 ticks: {
+
                                     callback: function(value) {
-                                        return "₹" + value.toLocaleString("en-IN");
+
+                                        return "₹" +
+                                            value.toLocaleString("en-IN");
+
                                     }
+
                                 }
+
                             }
 
                         },
@@ -540,14 +578,127 @@
                             }
 
                         }
+
                     }
+
                 }
             );
 
 
-            /*
-             * Expense Distribution Doughnut Chart
-             */
+            /* ---------------------------------
+               Monthly Income & Expense Trend
+            --------------------------------- */
+
+            const trendLabels = [
+
+                {% for item in report.trend %}
+
+                    {{ item.label | tojson }}
+
+                    {% if not loop.last %},{% endif %}
+
+                {% endfor %}
+
+            ];
+
+
+            const trendIncome = [
+
+                {% for item in report.trend %}
+
+                    {{ item.income }}
+
+                    {% if not loop.last %},{% endif %}
+
+                {% endfor %}
+
+            ];
+
+
+            const trendExpenses = [
+
+                {% for item in report.trend %}
+
+                    {{ item.expense }}
+
+                    {% if not loop.last %},{% endif %}
+
+                {% endfor %}
+
+            ];
+
+
+            const monthlyTrendCanvas =
+                document.getElementById("monthlyTrendChart");
+
+
+            new Chart(
+                monthlyTrendCanvas,
+                {
+                    type: "line",
+
+                    data: {
+
+                        labels: trendLabels,
+
+                        datasets: [
+
+                            {
+                                label: "Income",
+
+                                data: trendIncome,
+
+                                tension: 0.3
+                            },
+
+                            {
+                                label: "Expenses",
+
+                                data: trendExpenses,
+
+                                tension: 0.3
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: true,
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+
+                                    callback: function(value) {
+
+                                        return "₹" +
+                                            value.toLocaleString("en-IN");
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+
+            /* ---------------------------------
+               Expense Distribution Doughnut
+            --------------------------------- */
 
             {% if report.category_expenses %}
 
@@ -603,6 +754,8 @@
                         options: {
 
                             responsive: true,
+
+                            maintainAspectRatio: true,
 
                             plugins: {
 

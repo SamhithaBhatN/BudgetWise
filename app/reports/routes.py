@@ -134,8 +134,6 @@ def index():
             .all()
         )
 
-        # Convert database values into
-        # template-friendly dictionaries.
         category_expenses_data = [
             {
                 "category": category,
@@ -165,6 +163,109 @@ def index():
         )
 
         # ----------------------------------------
+        # Six-Month Trend
+        #
+        # The selected month is the final month
+        # in the six-month reporting period.
+        # ----------------------------------------
+
+        trend_data = []
+
+        month_names = [
+            "",
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ]
+
+        # Start five months before the selected month.
+        trend_month = selected_month - 5
+        trend_year = selected_year
+
+        while trend_month <= 0:
+
+            trend_month += 12
+            trend_year -= 1
+
+        for _ in range(6):
+
+            month_income = (
+                Transaction.query
+                .filter(
+                    Transaction.user_id == current_user.id,
+                    Transaction.type == "Income",
+                    func.extract(
+                        "month",
+                        Transaction.date
+                    ) == trend_month,
+                    func.extract(
+                        "year",
+                        Transaction.date
+                    ) == trend_year
+                )
+                .with_entities(
+                    func.coalesce(
+                        func.sum(Transaction.amount),
+                        0
+                    )
+                )
+                .scalar()
+            )
+
+            month_expense = (
+                Transaction.query
+                .filter(
+                    Transaction.user_id == current_user.id,
+                    Transaction.type == "Expense",
+                    func.extract(
+                        "month",
+                        Transaction.date
+                    ) == trend_month,
+                    func.extract(
+                        "year",
+                        Transaction.date
+                    ) == trend_year
+                )
+                .with_entities(
+                    func.coalesce(
+                        func.sum(Transaction.amount),
+                        0
+                    )
+                )
+                .scalar()
+            )
+
+            trend_data.append(
+                {
+                    "month": trend_month,
+                    "year": trend_year,
+                    "label": (
+                        f"{month_names[trend_month][:3]} "
+                        f"{trend_year}"
+                    ),
+                    "income": float(month_income or 0),
+                    "expense": float(month_expense or 0)
+                }
+            )
+
+            # Move to the next month.
+            trend_month += 1
+
+            if trend_month > 12:
+
+                trend_month = 1
+                trend_year += 1
+
+        # ----------------------------------------
         # Report Data
         # ----------------------------------------
 
@@ -175,7 +276,8 @@ def index():
             "total_expense": total_expense,
             "net_balance": net_balance,
             "transaction_count": transaction_count,
-            "category_expenses": category_expenses_data
+            "category_expenses": category_expenses_data,
+            "trend": trend_data
         }
 
     return render_template(
