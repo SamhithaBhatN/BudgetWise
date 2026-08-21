@@ -1,0 +1,657 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - BudgetWise{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- ================================= -->
+    <!-- Page Header -->
+    <!-- ================================= -->
+
+    <div class="mb-5">
+
+        <h2 class="fw-bold">
+            Reports
+        </h2>
+
+        <p class="text-muted mb-0">
+            Analyze your income, expenses, and financial trends.
+        </p>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- Report Filter -->
+    <!-- ================================= -->
+
+    <div class="card shadow-sm border-0 mb-5">
+
+        <div class="card-body p-4">
+
+            <h5 class="fw-bold mb-4">
+                Generate Monthly Report
+            </h5>
+
+            <form method="POST">
+
+                {{ form.hidden_tag() }}
+
+                <div class="row g-3 align-items-end">
+
+                    <!-- Month -->
+                    <div class="col-md-4">
+
+                        {{ form.month.label(
+                            class="form-label fw-semibold"
+                        ) }}
+
+                        {{ form.month(
+                            class="form-select"
+                        ) }}
+
+                        {% for error in form.month.errors %}
+
+                            <div class="text-danger small mt-1">
+                                {{ error }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- Year -->
+                    <div class="col-md-4">
+
+                        {{ form.year.label(
+                            class="form-label fw-semibold"
+                        ) }}
+
+                        {{ form.year(
+                            class="form-control",
+                            placeholder="e.g. 2026"
+                        ) }}
+
+                        {% for error in form.year.errors %}
+
+                            <div class="text-danger small mt-1">
+                                {{ error }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- Submit -->
+                    <div class="col-md-4">
+
+                        {{ form.submit(
+                            class="btn btn-success w-100"
+                        ) }}
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    {% if report %}
+
+        <!-- ================================= -->
+        <!-- Report Header -->
+        <!-- ================================= -->
+
+        <div class="mb-4">
+
+            <h4 class="fw-bold mb-1">
+                Monthly Summary
+            </h4>
+
+            <p class="text-muted mb-0">
+
+                {% set month_names = [
+                    "",
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December"
+                ] %}
+
+                {{ month_names[report.month] }} {{ report.year }}
+
+            </p>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- Summary Cards -->
+        <!-- ================================= -->
+
+        <div class="row g-4 mb-5">
+
+            <!-- Income -->
+            <div class="col-xl-3 col-md-6">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="small text-muted mb-2">
+                            Total Income
+                        </div>
+
+                        <h3 class="fw-bold text-success mb-0">
+                            ₹{{ "{:,.2f}".format(report.total_income) }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Expenses -->
+            <div class="col-xl-3 col-md-6">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="small text-muted mb-2">
+                            Total Expenses
+                        </div>
+
+                        <h3 class="fw-bold text-danger mb-0">
+                            ₹{{ "{:,.2f}".format(report.total_expense) }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Net Balance -->
+            <div class="col-xl-3 col-md-6">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="small text-muted mb-2">
+                            Net Balance
+                        </div>
+
+                        <h3 class="fw-bold
+                            {% if report.net_balance >= 0 %}
+                                text-success
+                            {% else %}
+                                text-danger
+                            {% endif %}
+                        ">
+                            ₹{{ "{:,.2f}".format(report.net_balance) }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Transaction Count -->
+            <div class="col-xl-3 col-md-6">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="small text-muted mb-2">
+                            Transactions
+                        </div>
+
+                        <h3 class="fw-bold mb-0">
+                            {{ report.transaction_count }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- Income vs Expenses -->
+        <!-- ================================= -->
+
+        <div class="card shadow-sm border-0 mb-4">
+
+            <div class="card-body p-4">
+
+                <h5 class="fw-bold mb-1">
+                    Income vs Expenses
+                </h5>
+
+                <p class="text-muted small mb-4">
+                    Compare your total income and expenses for the selected month.
+                </p>
+
+
+                <!-- Summary Values -->
+                <div class="row g-4 mb-4">
+
+                    <!-- Income -->
+                    <div class="col-md-6">
+
+                        <div class="p-4 rounded bg-success-subtle">
+
+                            <div class="small text-muted">
+                                Income
+                            </div>
+
+                            <h4 class="fw-bold text-success mb-0">
+                                ₹{{ "{:,.2f}".format(report.total_income) }}
+                            </h4>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Expenses -->
+                    <div class="col-md-6">
+
+                        <div class="p-4 rounded bg-danger-subtle">
+
+                            <div class="small text-muted">
+                                Expenses
+                            </div>
+
+                            <h4 class="fw-bold text-danger mb-0">
+                                ₹{{ "{:,.2f}".format(report.total_expense) }}
+                            </h4>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Bar Chart -->
+                <div
+                    class="mx-auto"
+                    style="max-width: 700px;"
+                >
+
+                    <canvas id="incomeExpenseChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- Category-wise Expense Breakdown -->
+        <!-- ================================= -->
+
+        <div class="card shadow-sm border-0 mb-4">
+
+            <div class="card-body p-4">
+
+                <div class="mb-4">
+
+                    <h5 class="fw-bold mb-1">
+                        Expense Breakdown by Category
+                    </h5>
+
+                    <p class="text-muted small mb-0">
+                        See where your money was spent this month.
+                    </p>
+
+                </div>
+
+
+                {% if report.category_expenses %}
+
+                    <div class="row g-3">
+
+                        {% for item in report.category_expenses %}
+
+                            <div class="col-md-6">
+
+                                <div class="p-3 rounded bg-light border">
+
+                                    <div class="d-flex justify-content-between align-items-center">
+
+                                        <div class="d-flex align-items-center gap-3">
+
+                                            <div class="rounded-circle
+                                                bg-danger-subtle
+                                                text-danger
+                                                d-flex
+                                                align-items-center
+                                                justify-content-center"
+                                                 style="width: 38px; height: 38px;">
+
+                                                <i class="bi bi-arrow-up-right"></i>
+
+                                            </div>
+
+                                            <div>
+
+                                                <div class="fw-semibold">
+                                                    {{ item.category }}
+                                                </div>
+
+                                                <small class="text-muted">
+                                                    Expense
+                                                </small>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="fw-bold text-danger">
+
+                                            ₹{{ "{:,.2f}".format(item.amount) }}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="text-center py-5">
+
+                        <div class="mb-3">
+
+                            <i class="bi bi-receipt fs-1 text-muted"></i>
+
+                        </div>
+
+                        <h5 class="fw-semibold">
+                            No expenses this month
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            There are no expense transactions for this reporting period.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- Expense Distribution Chart -->
+        <!-- ================================= -->
+
+        {% if report.category_expenses %}
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4">
+
+                    <h5 class="fw-bold mb-1">
+                        Expense Distribution
+                    </h5>
+
+                    <p class="text-muted small mb-4">
+                        Visual breakdown of your expenses by category.
+                    </p>
+
+
+                    <div
+                        class="mx-auto"
+                        style="max-width: 500px;"
+                    >
+
+                        <canvas id="expenseChart"></canvas>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% else %}
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body text-center py-5">
+
+                    <i class="bi bi-pie-chart fs-1 text-muted"></i>
+
+                    <h5 class="fw-semibold mt-3">
+                        No expense chart available
+                    </h5>
+
+                    <p class="text-muted mb-0">
+                        There are no expense transactions for this month.
+                    </p>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- ================================= -->
+        <!-- Chart.js -->
+        <!-- ================================= -->
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+
+            /*
+             * Income vs Expense Bar Chart
+             */
+
+            const incomeExpenseCanvas =
+                document.getElementById("incomeExpenseChart");
+
+            new Chart(
+                incomeExpenseCanvas,
+                {
+                    type: "bar",
+
+                    data: {
+                        labels: [
+                            "Income",
+                            "Expenses"
+                        ],
+
+                        datasets: [
+                            {
+                                label: "Amount",
+
+                                data: [
+                                    {{ report.total_income }},
+                                    {{ report.total_expense }}
+                                ]
+                            }
+                        ]
+                    },
+
+                    options: {
+                        responsive: true,
+
+                        maintainAspectRatio: true,
+
+                        scales: {
+
+                            y: {
+                                beginAtZero: true,
+
+                                ticks: {
+                                    callback: function(value) {
+                                        return "₹" + value.toLocaleString("en-IN");
+                                    }
+                                }
+                            }
+
+                        },
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            }
+
+                        }
+                    }
+                }
+            );
+
+
+            /*
+             * Expense Distribution Doughnut Chart
+             */
+
+            {% if report.category_expenses %}
+
+                const categoryLabels = [
+
+                    {% for item in report.category_expenses %}
+
+                        {{ item.category | tojson }}
+
+                        {% if not loop.last %},{% endif %}
+
+                    {% endfor %}
+
+                ];
+
+
+                const categoryValues = [
+
+                    {% for item in report.category_expenses %}
+
+                        {{ item.amount }}
+
+                        {% if not loop.last %},{% endif %}
+
+                    {% endfor %}
+
+                ];
+
+
+                const expenseCanvas =
+                    document.getElementById("expenseChart");
+
+
+                new Chart(
+                    expenseCanvas,
+                    {
+                        type: "doughnut",
+
+                        data: {
+
+                            labels: categoryLabels,
+
+                            datasets: [
+                                {
+                                    label: "Expenses",
+
+                                    data: categoryValues
+                                }
+                            ]
+
+                        },
+
+                        options: {
+
+                            responsive: true,
+
+                            plugins: {
+
+                                legend: {
+                                    position: "bottom"
+                                }
+
+                            }
+
+                        }
+
+                    }
+                );
+
+            {% endif %}
+
+        </script>
+
+
+    {% else %}
+
+        <!-- ================================= -->
+        <!-- Empty State -->
+        <!-- ================================= -->
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body text-center py-5">
+
+                <div class="mb-3">
+
+                    <i class="bi bi-bar-chart-line fs-1 text-muted"></i>
+
+                </div>
+
+                <h5 class="fw-semibold">
+                    No report generated yet
+                </h5>
+
+                <p class="text-muted mb-0">
+                    Select a month and year above to generate your report.
+                </p>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

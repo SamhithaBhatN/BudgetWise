@@ -34,5 +34,8 @@ def create_app():
 
     from app.goals import goals
     flask_app.register_blueprint(goals)
+
+    from app.reports import reports
+    flask_app.register_blueprint(reports)
     
     return flask_app
