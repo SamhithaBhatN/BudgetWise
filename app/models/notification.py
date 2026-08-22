@@ -17,6 +17,12 @@ class Notification(db.Model):
         nullable=False
     )
 
+    budget_id = db.Column(
+        db.Integer,
+        db.ForeignKey("budgets.id"),
+        nullable=True
+    )
+
     title = db.Column(
         db.String(100),
         nullable=False
@@ -45,6 +51,11 @@ class Notification(db.Model):
 
     user = db.relationship(
         "User",
+        backref="notifications"
+    )
+
+    budget = db.relationship(
+        "Budget",
         backref="notifications"
     )
 

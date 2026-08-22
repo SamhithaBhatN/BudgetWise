@@ -34,7 +34,6 @@ def generate_budget_notifications(user_id):
                     "month",
                     Transaction.date
                 ) == budget.month,
-
                 func.extract(
                     "year",
                     Transaction.date
@@ -55,7 +54,28 @@ def generate_budget_notifications(user_id):
 
 
         # ----------------------------------------
-        # Budget Exceeded
+        # No active alert below 80%
+        # ----------------------------------------
+
+        if percentage < 80:
+
+            Notification.query.filter(
+                Notification.user_id == user_id,
+                Notification.budget_id == budget.id,
+                Notification.is_read == False,
+                Notification.type.in_([
+                    "budget_warning",
+                    "budget_exceeded"
+                ])
+            ).delete(
+                synchronize_session=False
+            )
+
+            continue
+
+
+        # ----------------------------------------
+        # Determine current alert state
         # ----------------------------------------
 
         if percentage >= 100:
@@ -69,12 +89,7 @@ def generate_budget_notifications(user_id):
 
             notification_type = "budget_exceeded"
 
-
-        # ----------------------------------------
-        # Budget Warning
-        # ----------------------------------------
-
-        elif percentage >= 80:
+        else:
 
             title = "Budget Warning"
 
@@ -86,26 +101,38 @@ def generate_budget_notifications(user_id):
 
             notification_type = "budget_warning"
 
-        else:
-            continue
-
 
         # ----------------------------------------
-        # Prevent Duplicate Unread Notifications
+        # Find active unread notification
+        # for this exact budget
         # ----------------------------------------
 
-        existing = Notification.query.filter_by(
-            user_id=user_id,
-            title=title,
-            message=message,
-            type=notification_type,
-            is_read=False
+        existing = Notification.query.filter(
+            Notification.user_id == user_id,
+            Notification.budget_id == budget.id,
+            Notification.is_read == False,
+            Notification.type.in_([
+                "budget_warning",
+                "budget_exceeded"
+            ])
         ).first()
 
-        if not existing:
+
+        # ----------------------------------------
+        # Update existing active alert
+        # ----------------------------------------
+
+        if existing:
+
+            existing.title = title
+            existing.message = message
+            existing.type = notification_type
+
+        else:
 
             create_notification(
                 user_id=user_id,
+                budget_id=budget.id,
                 title=title,
                 message=message,
                 notification_type=notification_type

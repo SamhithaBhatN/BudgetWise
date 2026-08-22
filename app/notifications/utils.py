@@ -6,10 +6,12 @@ def create_notification(
     user_id,
     title,
     message,
-    notification_type
+    notification_type,
+    budget_id=None
 ):
     notification = Notification(
         user_id=user_id,
+        budget_id=budget_id,
         title=title,
         message=message,
         type=notification_type
