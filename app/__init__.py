@@ -60,6 +60,8 @@ def create_app():
     from app.notifications import notifications
     flask_app.register_blueprint(notifications)
 
+    from app.profile import profile
+    flask_app.register_blueprint(profile)
 
     # ----------------------------------------
     # Global Notification Count

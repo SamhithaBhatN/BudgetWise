@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - BudgetWise{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="mb-5">
+
+        <h2 class="fw-bold">
+            Settings
+        </h2>
+
+        <p class="text-muted mb-0">
+            Manage your notification and account preferences.
+        </p>
+
+    </div>
+
+
+    <div class="row">
+
+        <div class="col-lg-7">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-4">
+                        Notification Preferences
+                    </h4>
+
+
+                    <form method="POST">
+
+                        {{ form.hidden_tag() }}
+
+
+                        <!-- Budget Alerts -->
+                        <div class="form-check form-switch mb-4">
+
+                            {{ form.budget_alerts_enabled(
+                                class="form-check-input",
+                                role="switch"
+                            ) }}
+
+                            {{ form.budget_alerts_enabled.label(
+                                class="form-check-label fw-semibold"
+                            ) }}
+
+                            <div class="small text-muted mt-1">
+                                Receive notifications when your budget reaches
+                                warning or exceeded levels.
+                            </div>
+
+                        </div>
+
+
+                        <!-- Goal Reminders -->
+                        <div class="form-check form-switch mb-4">
+
+                            {{ form.goal_reminders_enabled(
+                                class="form-check-input",
+                                role="switch"
+                            ) }}
+
+                            {{ form.goal_reminders_enabled.label(
+                                class="form-check-label fw-semibold"
+                            ) }}
+
+                            <div class="small text-muted mt-1">
+                                Receive reminders about upcoming savings-goal
+                                deadlines.
+                            </div>
+
+                        </div>
+
+
+                        {{ form.submit(
+                            class="btn btn-success"
+                        ) }}
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

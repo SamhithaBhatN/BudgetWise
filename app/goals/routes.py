@@ -5,6 +5,7 @@ from app.goals import goals
 from app.goals.forms import GoalForm
 from app.models.goal import Goal
 from app.extensions import db
+from app.notifications.goal_services import generate_goal_notifications
 
 
 @goals.route("/", methods=["GET", "POST"])
@@ -19,6 +20,9 @@ def index():
         .order_by(Goal.target_date.asc())
         .all()
     )
+
+    # Generate or refresh goal reminder notifications
+    generate_goal_notifications(current_user.id)
 
     if form.validate_on_submit():
 
@@ -48,7 +52,11 @@ def index():
         goals=goals_list
     )
 
-@goals.route("/edit/<int:id>", methods=["GET", "POST"])
+
+@goals.route(
+    "/edit/<int:id>",
+    methods=["GET", "POST"]
+)
 @login_required
 def edit_goal(id):
 
@@ -82,7 +90,11 @@ def edit_goal(id):
         form=form
     )
 
-@goals.route("/delete/<int:id>", methods=["POST"])
+
+@goals.route(
+    "/delete/<int:id>",
+    methods=["POST"]
+)
 @login_required
 def delete_goal(id):
 

@@ -1,0 +1,386 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - BudgetWise{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- ================================= -->
+    <!-- Page Header -->
+    <!-- ================================= -->
+
+    <div class="mb-5">
+
+        <h2 class="fw-bold">
+            Profile
+        </h2>
+
+        <p class="text-muted mb-0">
+            Manage your personal information and account preferences.
+        </p>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- Profile Information -->
+    <!-- ================================= -->
+
+    <div class="row g-4">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-4">
+                        Personal Information
+                    </h4>
+
+
+                    <form method="POST"
+                          action="{{ url_for('profile.index') }}">
+
+                        {{ form.hidden_tag() }}
+
+
+                        <!-- Full Name -->
+                        <div class="mb-3">
+
+                            {{ form.full_name.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {{ form.full_name(
+                                class="form-control"
+                            ) }}
+
+                            {% for error in form.full_name.errors %}
+
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- Username -->
+                        <div class="mb-3">
+
+                            {{ form.username.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {{ form.username(
+                                class="form-control"
+                            ) }}
+
+                            {% for error in form.username.errors %}
+
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- Email -->
+                        <div class="mb-3">
+
+                            {{ form.email.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {{ form.email(
+                                class="form-control"
+                            ) }}
+
+                            {% for error in form.email.errors %}
+
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- Currency -->
+                        <div class="mb-4">
+
+                            {{ form.currency.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {{ form.currency(
+                                class="form-select"
+                            ) }}
+
+                            {% for error in form.currency.errors %}
+
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        {{ form.submit(
+                            class="btn btn-success"
+                        ) }}
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- Account Information -->
+        <!-- ================================= -->
+
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-4">
+                        Account Information
+                    </h4>
+
+
+                    <!-- User Icon -->
+                    <div class="text-center mb-4">
+
+                        <div class="
+                            rounded-circle
+                            bg-success-subtle
+                            text-success
+                            d-inline-flex
+                            align-items-center
+                            justify-content-center
+                        "
+                        style="width: 80px; height: 80px;">
+
+                            <i class="bi bi-person fs-2"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Username -->
+                    <div class="mb-3">
+
+                        <div class="small text-muted">
+                            Username
+                        </div>
+
+                        <div class="fw-semibold">
+                            {{ current_user.username }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- Email -->
+                    <div class="mb-3">
+
+                        <div class="small text-muted">
+                            Email
+                        </div>
+
+                        <div class="fw-semibold text-break">
+                            {{ current_user.email }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- Account Status -->
+                    <div class="mb-3">
+
+                        <div class="small text-muted">
+                            Account Status
+                        </div>
+
+                        {% if current_user.is_active %}
+
+                            <span class="badge bg-success-subtle text-success">
+                                Active
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger-subtle text-danger">
+                                Inactive
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Joined Date -->
+                    <div class="mb-3">
+
+                        <div class="small text-muted">
+                            Member Since
+                        </div>
+
+                        <div class="fw-semibold">
+                            {{ current_user.created_at.strftime(
+                                "%d %b %Y"
+                            ) }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- Currency -->
+                    <div>
+
+                        <div class="small text-muted">
+                            Currency
+                        </div>
+
+                        <div class="fw-semibold">
+                            {{ current_user.currency }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- Change Password -->
+    <!-- ================================= -->
+
+    <div class="row mt-4">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-1">
+                        Change Password
+                    </h4>
+
+                    <p class="text-muted mb-4">
+                        Update your account password securely.
+                    </p>
+
+
+                    <form method="POST"
+                          action="{{ url_for(
+                              'profile.change_password'
+                          ) }}">
+
+                        {{ password_form.hidden_tag() }}
+
+
+                        <!-- Current Password -->
+                        <div class="mb-3">
+
+                            {{ password_form.current_password.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {{ password_form.current_password(
+                                class="form-control"
+                            ) }}
+
+                            {% for error in password_form.current_password.errors %}
+
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- New Password -->
+                        <div class="mb-3">
+
+                            {{ password_form.new_password.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {{ password_form.new_password(
+                                class="form-control"
+                            ) }}
+
+                            {% for error in password_form.new_password.errors %}
+
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- Confirm Password -->
+                        <div class="mb-4">
+
+                            {{ password_form.confirm_password.label(
+                                class="form-label fw-semibold"
+                            ) }}
+
+                            {{ password_form.confirm_password(
+                                class="form-control"
+                            ) }}
+
+                            {% for error in password_form.confirm_password.errors %}
+
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        {{ password_form.submit(
+                            class="btn btn-success"
+                        ) }}
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

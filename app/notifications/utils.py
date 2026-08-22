@@ -7,11 +7,13 @@ def create_notification(
     title,
     message,
     notification_type,
-    budget_id=None
+    budget_id=None,
+    goal_id=None
 ):
     notification = Notification(
         user_id=user_id,
         budget_id=budget_id,
+        goal_id=goal_id,
         title=title,
         message=message,
         type=notification_type

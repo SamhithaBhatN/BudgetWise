@@ -4,10 +4,55 @@ from app.extensions import db
 from app.models.budget import Budget
 from app.models.notification import Notification
 from app.models.transaction import Transaction
+from app.models.user_settings import UserSettings
 from app.notifications.utils import create_notification
 
 
 def generate_budget_notifications(user_id):
+
+    # ----------------------------------------
+    # Get user notification settings
+    # ----------------------------------------
+
+    user_settings = UserSettings.query.filter_by(
+        user_id=user_id
+    ).first()
+
+
+    # If settings do not exist, use the default:
+    # Budget alerts enabled.
+    budget_alerts_enabled = (
+        user_settings is None
+        or user_settings.budget_alerts_enabled
+    )
+
+
+    # ----------------------------------------
+    # Budget Alerts Disabled
+    # ----------------------------------------
+
+    if not budget_alerts_enabled:
+
+        # Remove active unread budget alerts.
+        Notification.query.filter(
+            Notification.user_id == user_id,
+            Notification.is_read == False,
+            Notification.type.in_([
+                "budget_warning",
+                "budget_exceeded"
+            ])
+        ).delete(
+            synchronize_session=False
+        )
+
+        db.session.commit()
+
+        return
+
+
+    # ----------------------------------------
+    # Get User Budgets
+    # ----------------------------------------
 
     budgets = (
         Budget.query
@@ -15,7 +60,12 @@ def generate_budget_notifications(user_id):
         .all()
     )
 
+
     for budget in budgets:
+
+        # ----------------------------------------
+        # Calculate Spending
+        # ----------------------------------------
 
         spent = (
             db.session.query(
@@ -45,8 +95,10 @@ def generate_budget_notifications(user_id):
         spent = float(spent or 0)
         budget_amount = float(budget.amount)
 
+
         if budget_amount <= 0:
             continue
+
 
         percentage = (
             spent / budget_amount
@@ -54,7 +106,7 @@ def generate_budget_notifications(user_id):
 
 
         # ----------------------------------------
-        # No active alert below 80%
+        # Below Warning Threshold
         # ----------------------------------------
 
         if percentage < 80:
@@ -75,7 +127,7 @@ def generate_budget_notifications(user_id):
 
 
         # ----------------------------------------
-        # Determine current alert state
+        # Determine Current Alert
         # ----------------------------------------
 
         if percentage >= 100:
@@ -103,8 +155,7 @@ def generate_budget_notifications(user_id):
 
 
         # ----------------------------------------
-        # Find active unread notification
-        # for this exact budget
+        # Find Existing Active Notification
         # ----------------------------------------
 
         existing = Notification.query.filter(
@@ -119,7 +170,7 @@ def generate_budget_notifications(user_id):
 
 
         # ----------------------------------------
-        # Update existing active alert
+        # Update Existing Notification
         # ----------------------------------------
 
         if existing:
@@ -127,6 +178,11 @@ def generate_budget_notifications(user_id):
             existing.title = title
             existing.message = message
             existing.type = notification_type
+
+
+        # ----------------------------------------
+        # Create New Notification
+        # ----------------------------------------
 
         else:
 
