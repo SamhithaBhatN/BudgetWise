@@ -1,10 +1,20 @@
 import os
 
-class Config:
-    SECRET_KEY = "BudgetWise@Samhitha311#2026"
+from dotenv import load_dotenv
 
-    SQLALCHEMY_DATABASE_URI = (
-        "mysql+pymysql://root:L23,us20.25@localhost/budgetwise_db"
+
+# Load variables from .env
+load_dotenv()
+
+
+class Config:
+
+    SECRET_KEY = os.environ.get(
+        "SECRET_KEY"
+    )
+
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "DATABASE_URL"
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False

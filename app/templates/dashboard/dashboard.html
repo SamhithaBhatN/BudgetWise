@@ -8,9 +8,14 @@
 
     <div class="container py-5">
 
+        <!-- ================================= -->
         <!-- Dashboard Header -->
+        <!-- ================================= -->
+
         <div class="dashboard-header mb-5">
+
             <div>
+
                 <h2 class="dashboard-title">
                     Welcome, {{ current_user.full_name }} 👋
                 </h2>
@@ -18,17 +23,24 @@
                 <p class="dashboard-subtitle mb-0">
                     Here's an overview of your finances.
                 </p>
+
             </div>
 
             <a href="{{ url_for('transactions.add_transaction') }}"
                class="btn btn-success dashboard-add-btn">
+
                 <i class="bi bi-plus-lg"></i>
                 Add Transaction
+
             </a>
+
         </div>
 
 
+        <!-- ================================= -->
         <!-- Summary Cards -->
+        <!-- ================================= -->
+
         <div class="row g-4">
 
             <!-- Balance -->
@@ -47,11 +59,11 @@
                         </p>
 
                         <h3>
-                            ₹{{ "%.2f"|format(net_balance) }}
+                            {{ currency_symbol }}{{ "{:,.2f}".format(net_balance) }}
                         </h3>
 
                         <small>
-                            Available balance
+                            Income minus expenses
                         </small>
 
                     </div>
@@ -77,7 +89,7 @@
                         </p>
 
                         <h3>
-                            ₹{{ "%.2f"|format(total_income) }}
+                            {{ currency_symbol }}{{ "{:,.2f}".format(total_income) }}
                         </h3>
 
                         <small>
@@ -107,7 +119,7 @@
                         </p>
 
                         <h3>
-                            ₹{{ "%.2f"|format(total_expense) }}
+                            {{ currency_symbol }}{{ "{:,.2f}".format(total_expense) }}
                         </h3>
 
                         <small>
@@ -121,7 +133,7 @@
             </div>
 
 
-            <!-- Savings -->
+            <!-- Savings Goals -->
             <div class="col-xl-3 col-md-6">
 
                 <div class="dashboard-card savings-card">
@@ -133,15 +145,15 @@
                     <div class="card-content">
 
                         <p class="card-label">
-                            Savings
+                            Goal Savings
                         </p>
 
                         <h3>
-                            ₹{{ "%.2f"|format(net_balance) }}
+                            {{ currency_symbol }}{{ "{:,.2f}".format(total_goal_saved) }}
                         </h3>
 
                         <small>
-                            Current savings
+                            Saved toward goals
                         </small>
 
                     </div>
@@ -153,12 +165,308 @@
         </div>
 
 
+        <!-- ================================= -->
+        <!-- Budget + Goals Overview -->
+        <!-- ================================= -->
+
+        <div class="row g-4 mt-2">
+
+            <!-- Budget Overview -->
+            <div class="col-lg-6">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+
+                            <div>
+
+                                <h4 class="fw-bold mb-1">
+                                    Budget Overview
+                                </h4>
+
+                                <p class="text-muted mb-0">
+                                    Track your overall budget usage.
+                                </p>
+
+                            </div>
+
+                            <a href="{{ url_for('budgets.index') }}"
+                               class="btn btn-sm btn-outline-success">
+
+                                View Budgets
+
+                            </a>
+
+                        </div>
+
+
+                        <div class="row g-3">
+
+                            <div class="col-4">
+
+                                <div class="small text-muted">
+                                    Budget
+                                </div>
+
+                                <div class="fw-bold">
+                                    {{ currency_symbol }}{{ "{:,.2f}".format(total_budget) }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-4">
+
+                                <div class="small text-muted">
+                                    Spent
+                                </div>
+
+                                <div class="fw-bold text-danger">
+                                    {{ currency_symbol }}{{ "{:,.2f}".format(total_budget_spent) }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-4">
+
+                                <div class="small text-muted">
+                                    Remaining
+                                </div>
+
+                                <div class="fw-bold
+                                    {% if total_budget_remaining >= 0 %}
+                                        text-success
+                                    {% else %}
+                                        text-danger
+                                    {% endif %}
+                                ">
+
+                                    {{ currency_symbol }}{{ "{:,.2f}".format(total_budget_remaining) }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="mt-4">
+
+                            <div class="d-flex justify-content-between mb-2">
+
+                                <span class="small text-muted">
+                                    Overall Usage
+                                </span>
+
+                                <span class="small fw-semibold">
+
+                                    {{ "%.1f"|format(
+                                        overall_budget_percentage
+                                    ) }}%
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="progress"
+                                 style="height: 10px;">
+
+                                <div class="progress-bar
+                                    {% if overall_budget_percentage > 100 %}
+                                        bg-danger
+                                    {% elif overall_budget_percentage >= 80 %}
+                                        bg-warning
+                                    {% else %}
+                                        bg-success
+                                    {% endif %}
+                                "
+                                     style="width: {{
+                                         [overall_budget_percentage, 100]|min
+                                     }}%;">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Goals Overview -->
+            <div class="col-lg-6">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+
+                            <div>
+
+                                <h4 class="fw-bold mb-1">
+                                    Savings Goals
+                                </h4>
+
+                                <p class="text-muted mb-0">
+                                    Track your progress toward your goals.
+                                </p>
+
+                            </div>
+
+                            <a href="{{ url_for('goals.index') }}"
+                               class="btn btn-sm btn-outline-success">
+
+                                View Goals
+
+                            </a>
+
+                        </div>
+
+
+                        <div class="row g-3">
+
+                            <div class="col-4">
+
+                                <div class="small text-muted">
+                                    Target
+                                </div>
+
+                                <div class="fw-bold">
+                                    {{ currency_symbol }}{{ "{:,.2f}".format(
+                                        total_goal_target
+                                    ) }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-4">
+
+                                <div class="small text-muted">
+                                    Saved
+                                </div>
+
+                                <div class="fw-bold text-success">
+                                    {{ currency_symbol }}{{ "{:,.2f}".format(
+                                        total_goal_saved
+                                    ) }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-4">
+
+                                <div class="small text-muted">
+                                    Remaining
+                                </div>
+
+                                <div class="fw-bold text-primary">
+                                    {{ currency_symbol }}{{ "{:,.2f}".format(
+                                        total_goal_remaining
+                                    ) }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="mt-4">
+
+                            <div class="d-flex justify-content-between mb-2">
+
+                                <span class="small text-muted">
+                                    Overall Progress
+                                </span>
+
+                                <span class="small fw-semibold text-success">
+
+                                    {{ "%.1f"|format(
+                                        overall_goal_percentage
+                                    ) }}%
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="progress"
+                                 style="height: 10px;">
+
+                                <div class="progress-bar bg-success"
+                                     style="width: {{
+                                         [overall_goal_percentage, 100]|min
+                                     }}%;">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- Notification Summary -->
+        <!-- ================================= -->
+
+        {% if unread_notification_count > 0 %}
+
+            <div class="alert alert-warning d-flex
+                        justify-content-between
+                        align-items-center mt-4">
+
+                <div>
+
+                    <i class="bi bi-bell me-2"></i>
+
+                    You have
+                    <strong>
+                        {{ unread_notification_count }}
+                    </strong>
+                    unread notification{{ "s" if unread_notification_count != 1 else "" }}.
+
+                </div>
+
+                <a href="{{ url_for('notifications.index') }}"
+                   class="btn btn-sm btn-outline-dark">
+
+                    View Notifications
+
+                </a>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- ================================= -->
         <!-- Recent Transactions -->
+        <!-- ================================= -->
+
         <section class="recent-transactions-section mt-5">
 
             <div class="section-header">
 
                 <div>
+
                     <h3>
                         Recent Transactions
                     </h3>
@@ -166,12 +474,15 @@
                     <p>
                         Your latest financial activities
                     </p>
+
                 </div>
 
                 <a href="{{ url_for('transactions.index') }}"
                    class="btn btn-outline-success">
+
                     View All
                     <i class="bi bi-arrow-right"></i>
+
                 </a>
 
             </div>
@@ -186,14 +497,33 @@
                         <table class="table transactions-table mb-0">
 
                             <thead>
+
                                 <tr>
-                                    <th>Transaction</th>
-                                    <th>Category</th>
-                                    <th>Type</th>
-                                    <th>Date</th>
-                                    <th class="text-end">Amount</th>
+
+                                    <th>
+                                        Transaction
+                                    </th>
+
+                                    <th>
+                                        Category
+                                    </th>
+
+                                    <th>
+                                        Type
+                                    </th>
+
+                                    <th>
+                                        Date
+                                    </th>
+
+                                    <th class="text-end">
+                                        Amount
+                                    </th>
+
                                 </tr>
+
                             </thead>
+
 
                             <tbody>
 
@@ -202,26 +532,38 @@
                                     <tr>
 
                                         <td>
+
                                             <div class="transaction-name">
+
                                                 <span class="transaction-icon">
+
                                                     {% if transaction.type == "Income" %}
+
                                                         <i class="bi bi-arrow-down-left"></i>
+
                                                     {% else %}
+
                                                         <i class="bi bi-arrow-up-right"></i>
+
                                                     {% endif %}
+
                                                 </span>
 
                                                 <strong>
                                                     {{ transaction.title }}
                                                 </strong>
+
                                             </div>
+
                                         </td>
 
 
                                         <td>
+
                                             <span class="category-text">
                                                 {{ transaction.category }}
                                             </span>
+
                                         </td>
 
 
@@ -245,9 +587,13 @@
 
 
                                         <td>
+
                                             <span class="date-text">
-                                                {{ transaction.date.strftime("%d %b %Y") }}
+                                                {{ transaction.date.strftime(
+                                                    "%d %b %Y"
+                                                ) }}
                                             </span>
+
                                         </td>
 
 
@@ -256,13 +602,21 @@
                                             {% if transaction.type == "Income" %}
 
                                                 <span class="transaction-amount income-amount">
-                                                    +₹{{ "%.2f"|format(transaction.amount) }}
+
+                                                    +{{ currency_symbol }}{{ "{:,.2f}".format(
+                                                        transaction.amount
+                                                    ) }}
+
                                                 </span>
 
                                             {% else %}
 
                                                 <span class="transaction-amount expense-amount">
-                                                    -₹{{ "%.2f"|format(transaction.amount) }}
+
+                                                    -{{ currency_symbol }}{{ "{:,.2f}".format(
+                                                        transaction.amount
+                                                    ) }}
+
                                                 </span>
 
                                             {% endif %}
@@ -281,6 +635,7 @@
 
                 </div>
 
+
             {% else %}
 
                 <div class="empty-transactions">
@@ -289,7 +644,9 @@
                         <i class="bi bi-receipt"></i>
                     </div>
 
-                    <h5>No transactions yet</h5>
+                    <h5>
+                        No transactions yet
+                    </h5>
 
                     <p>
                         Start tracking your finances by adding your first transaction.
@@ -297,8 +654,10 @@
 
                     <a href="{{ url_for('transactions.add_transaction') }}"
                        class="btn btn-success">
+
                         <i class="bi bi-plus-lg"></i>
                         Add Transaction
+
                     </a>
 
                 </div>

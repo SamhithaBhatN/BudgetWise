@@ -1,5 +1,3 @@
-from datetime import date
-
 from flask import render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 
@@ -16,18 +14,29 @@ def index():
 
     transactions_list = (
         Transaction.query
-        .filter_by(user_id=current_user.id)
-        .order_by(Transaction.date.desc())
+        .filter_by(
+            user_id=current_user.id
+        )
+        .order_by(
+            Transaction.date.desc()
+        )
         .all()
     )
 
+    # Form used for CSRF protection on delete actions
+    form = TransactionForm()
+
     return render_template(
         "transactions/index.html",
-        transactions=transactions_list
+        transactions=transactions_list,
+        form=form
     )
 
 
-@transactions.route("/add", methods=["GET", "POST"])
+@transactions.route(
+    "/add",
+    methods=["GET", "POST"]
+)
 @login_required
 def add_transaction():
 
@@ -35,19 +44,23 @@ def add_transaction():
 
     user_categories = (
         Category.query
-        .filter_by(user_id=current_user.id)
-        .order_by(Category.name.asc())
+        .filter_by(
+            user_id=current_user.id
+        )
+        .order_by(
+            Category.name.asc()
+        )
         .all()
     )
 
-    form.set_categories(user_categories)
+    form.set_categories(
+        user_categories
+    )
 
     category_types = {
         category.name: category.type
         for category in user_categories
     }
-
-    today = date.today().isoformat()
 
     if form.validate_on_submit():
 
@@ -67,8 +80,7 @@ def add_transaction():
             return render_template(
                 "transactions/add_transaction.html",
                 form=form,
-                category_types=category_types,
-                today=today
+                category_types=category_types
             )
 
         transaction = Transaction(
@@ -84,19 +96,26 @@ def add_transaction():
         db.session.add(transaction)
         db.session.commit()
 
-        flash("Transaction added successfully!", "success")
+        flash(
+            "Transaction added successfully!",
+            "success"
+        )
 
-        return redirect(url_for("dashboard.home"))
+        return redirect(
+            url_for("dashboard.home")
+        )
 
     return render_template(
         "transactions/add_transaction.html",
         form=form,
-        category_types=category_types,
-        today=today
+        category_types=category_types
     )
 
 
-@transactions.route("/edit/<int:id>", methods=["GET", "POST"])
+@transactions.route(
+    "/edit/<int:id>",
+    methods=["GET", "POST"]
+)
 @login_required
 def edit_transaction(id):
 
@@ -105,23 +124,29 @@ def edit_transaction(id):
         user_id=current_user.id
     ).first_or_404()
 
-    form = TransactionForm(obj=transaction)
+    form = TransactionForm(
+        obj=transaction
+    )
 
     user_categories = (
         Category.query
-        .filter_by(user_id=current_user.id)
-        .order_by(Category.name.asc())
+        .filter_by(
+            user_id=current_user.id
+        )
+        .order_by(
+            Category.name.asc()
+        )
         .all()
     )
 
-    form.set_categories(user_categories)
+    form.set_categories(
+        user_categories
+    )
 
     category_types = {
         category.name: category.type
         for category in user_categories
     }
-
-    today = date.today().isoformat()
 
     if form.validate_on_submit():
 
@@ -141,8 +166,7 @@ def edit_transaction(id):
             return render_template(
                 "transactions/edit_transaction.html",
                 form=form,
-                category_types=category_types,
-                today=today
+                category_types=category_types
             )
 
         transaction.title = form.title.data
@@ -154,19 +178,26 @@ def edit_transaction(id):
 
         db.session.commit()
 
-        flash("Transaction updated successfully!", "success")
+        flash(
+            "Transaction updated successfully!",
+            "success"
+        )
 
-        return redirect(url_for("transactions.index"))
+        return redirect(
+            url_for("transactions.index")
+        )
 
     return render_template(
         "transactions/edit_transaction.html",
         form=form,
-        category_types=category_types,
-        today=today
+        category_types=category_types
     )
 
 
-@transactions.route("/delete/<int:id>", methods=["POST"])
+@transactions.route(
+    "/delete/<int:id>",
+    methods=["POST"]
+)
 @login_required
 def delete_transaction(id):
 
@@ -178,6 +209,11 @@ def delete_transaction(id):
     db.session.delete(transaction)
     db.session.commit()
 
-    flash("Transaction deleted successfully!", "success")
+    flash(
+        "Transaction deleted successfully!",
+        "success"
+    )
 
-    return redirect(url_for("transactions.index"))
+    return redirect(
+        url_for("transactions.index")
+    )

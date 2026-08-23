@@ -1,9 +1,9 @@
 from flask import Flask
 from config import Config
 
-from app.extensions import db, migrate, login_manager
-
 from flask_login import current_user
+
+from app.extensions import db, migrate, login_manager
 from app.models.notification import Notification
 
 
@@ -12,6 +12,7 @@ def create_app():
     flask_app = Flask(__name__)
 
     flask_app.config.from_object(Config)
+
 
     # ----------------------------------------
     # Initialize Extensions
@@ -63,6 +64,7 @@ def create_app():
     from app.profile import profile
     flask_app.register_blueprint(profile)
 
+
     # ----------------------------------------
     # Global Notification Count
     # ----------------------------------------
@@ -84,7 +86,21 @@ def create_app():
             )
 
         return {
-            "unread_notification_count": unread_notification_count
+            "unread_notification_count":
+                unread_notification_count
+        }
+
+
+    # ----------------------------------------
+    # Global Currency Information
+    # ----------------------------------------
+
+    @flask_app.context_processor
+    def inject_currency():
+
+        return {
+            "currency_code": "INR",
+            "currency_symbol": "₹"
         }
 
 

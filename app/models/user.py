@@ -19,7 +19,7 @@ class User(UserMixin, db.Model):
 
     password_hash = db.Column(db.String(255), nullable=False)
 
-    currency = db.Column(db.String(10), default="INR")
+    currency = db.Column(db.String(3), nullable=False, default="INR")
 
     is_active = db.Column(db.Boolean, default=True)
 

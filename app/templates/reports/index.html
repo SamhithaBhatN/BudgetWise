@@ -6,10 +6,7 @@
 
 <div class="container py-5">
 
-    <!-- ================================= -->
     <!-- Page Header -->
-    <!-- ================================= -->
-
     <div class="mb-5">
 
         <h2 class="fw-bold">
@@ -23,10 +20,7 @@
     </div>
 
 
-    <!-- ================================= -->
     <!-- Report Filter -->
-    <!-- ================================= -->
-
     <div class="card shadow-sm border-0 mb-5">
 
         <div class="card-body p-4">
@@ -41,7 +35,6 @@
 
                 <div class="row g-3 align-items-end">
 
-                    <!-- Month -->
                     <div class="col-md-4">
 
                         {{ form.month.label(
@@ -63,7 +56,6 @@
                     </div>
 
 
-                    <!-- Year -->
                     <div class="col-md-4">
 
                         {{ form.year.label(
@@ -86,7 +78,6 @@
                     </div>
 
 
-                    <!-- Submit -->
                     <div class="col-md-4">
 
                         {{ form.submit(
@@ -105,10 +96,6 @@
 
 
     {% if report %}
-
-        <!-- ================================= -->
-        <!-- Report Header -->
-        <!-- ================================= -->
 
         <div class="mb-4">
 
@@ -141,13 +128,9 @@
         </div>
 
 
-        <!-- ================================= -->
         <!-- Summary Cards -->
-        <!-- ================================= -->
-
         <div class="row g-4 mb-5">
 
-            <!-- Income -->
             <div class="col-xl-3 col-md-6">
 
                 <div class="card shadow-sm border-0 h-100">
@@ -159,7 +142,7 @@
                         </div>
 
                         <h3 class="fw-bold text-success mb-0">
-                            ₹{{ "{:,.2f}".format(report.total_income) }}
+                            {{ currency_symbol }}{{ "{:,.2f}".format(report.total_income) }}
                         </h3>
 
                     </div>
@@ -169,7 +152,6 @@
             </div>
 
 
-            <!-- Expenses -->
             <div class="col-xl-3 col-md-6">
 
                 <div class="card shadow-sm border-0 h-100">
@@ -181,7 +163,7 @@
                         </div>
 
                         <h3 class="fw-bold text-danger mb-0">
-                            ₹{{ "{:,.2f}".format(report.total_expense) }}
+                            {{ currency_symbol }}{{ "{:,.2f}".format(report.total_expense) }}
                         </h3>
 
                     </div>
@@ -191,7 +173,6 @@
             </div>
 
 
-            <!-- Net Balance -->
             <div class="col-xl-3 col-md-6">
 
                 <div class="card shadow-sm border-0 h-100">
@@ -209,7 +190,7 @@
                                 text-danger
                             {% endif %}
                         ">
-                            ₹{{ "{:,.2f}".format(report.net_balance) }}
+                            {{ currency_symbol }}{{ "{:,.2f}".format(report.net_balance) }}
                         </h3>
 
                     </div>
@@ -219,7 +200,6 @@
             </div>
 
 
-            <!-- Transaction Count -->
             <div class="col-xl-3 col-md-6">
 
                 <div class="card shadow-sm border-0 h-100">
@@ -243,10 +223,7 @@
         </div>
 
 
-        <!-- ================================= -->
         <!-- Income vs Expenses -->
-        <!-- ================================= -->
-
         <div class="card shadow-sm border-0 mb-4">
 
             <div class="card-body p-4">
@@ -260,10 +237,8 @@
                 </p>
 
 
-                <!-- Summary Values -->
                 <div class="row g-4 mb-4">
 
-                    <!-- Income -->
                     <div class="col-md-6">
 
                         <div class="p-4 rounded bg-success-subtle">
@@ -273,7 +248,7 @@
                             </div>
 
                             <h4 class="fw-bold text-success mb-0">
-                                ₹{{ "{:,.2f}".format(report.total_income) }}
+                                {{ currency_symbol }}{{ "{:,.2f}".format(report.total_income) }}
                             </h4>
 
                         </div>
@@ -281,7 +256,6 @@
                     </div>
 
 
-                    <!-- Expenses -->
                     <div class="col-md-6">
 
                         <div class="p-4 rounded bg-danger-subtle">
@@ -291,7 +265,7 @@
                             </div>
 
                             <h4 class="fw-bold text-danger mb-0">
-                                ₹{{ "{:,.2f}".format(report.total_expense) }}
+                                {{ currency_symbol }}{{ "{:,.2f}".format(report.total_expense) }}
                             </h4>
 
                         </div>
@@ -301,7 +275,6 @@
                 </div>
 
 
-                <!-- Bar Chart -->
                 <div
                     class="mx-auto"
                     style="max-width: 700px;"
@@ -316,10 +289,7 @@
         </div>
 
 
-        <!-- ================================= -->
-        <!-- Monthly Income & Expense Trend -->
-        <!-- ================================= -->
-
+        <!-- Monthly Trend -->
         <div class="card shadow-sm border-0 mb-4">
 
             <div class="card-body p-4">
@@ -346,10 +316,7 @@
         </div>
 
 
-        <!-- ================================= -->
         <!-- Category-wise Expense Breakdown -->
-        <!-- ================================= -->
-
         <div class="card shadow-sm border-0 mb-4">
 
             <div class="card-body p-4">
@@ -410,7 +377,7 @@
 
                                         <div class="fw-bold text-danger">
 
-                                            ₹{{ "{:,.2f}".format(item.amount) }}
+                                            {{ currency_symbol }}{{ "{:,.2f}".format(item.amount) }}
 
                                         </div>
 
@@ -451,10 +418,7 @@
         </div>
 
 
-        <!-- ================================= -->
-        <!-- Expense Distribution Chart -->
-        <!-- ================================= -->
-
+        <!-- Expense Distribution -->
         {% if report.category_expenses %}
 
             <div class="card shadow-sm border-0 mb-4">
@@ -468,7 +432,6 @@
                     <p class="text-muted small mb-4">
                         Visual breakdown of your expenses by category.
                     </p>
-
 
                     <div
                         class="mx-auto"
@@ -506,20 +469,23 @@
         {% endif %}
 
 
-        <!-- ================================= -->
         <!-- Chart.js -->
-        <!-- ================================= -->
-
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <script>
+
+            const currencySymbol =
+                {{ currency_symbol | tojson }};
+
 
             /* ---------------------------------
                Income vs Expense Bar Chart
             --------------------------------- */
 
             const incomeExpenseCanvas =
-                document.getElementById("incomeExpenseChart");
+                document.getElementById(
+                    "incomeExpenseChart"
+                );
 
             new Chart(
                 incomeExpenseCanvas,
@@ -548,8 +514,6 @@
 
                         responsive: true,
 
-                        maintainAspectRatio: true,
-
                         scales: {
 
                             y: {
@@ -560,7 +524,7 @@
 
                                     callback: function(value) {
 
-                                        return "₹" +
+                                        return currencySymbol +
                                             value.toLocaleString("en-IN");
 
                                     }
@@ -629,7 +593,9 @@
 
 
             const monthlyTrendCanvas =
-                document.getElementById("monthlyTrendChart");
+                document.getElementById(
+                    "monthlyTrendChart"
+                );
 
 
             new Chart(
@@ -667,8 +633,6 @@
 
                         responsive: true,
 
-                        maintainAspectRatio: true,
-
                         scales: {
 
                             y: {
@@ -679,7 +643,7 @@
 
                                     callback: function(value) {
 
-                                        return "₹" +
+                                        return currencySymbol +
                                             value.toLocaleString("en-IN");
 
                                     }
@@ -729,7 +693,9 @@
 
 
                 const expenseCanvas =
-                    document.getElementById("expenseChart");
+                    document.getElementById(
+                        "expenseChart"
+                    );
 
 
                 new Chart(
@@ -744,7 +710,6 @@
                             datasets: [
                                 {
                                     label: "Expenses",
-
                                     data: categoryValues
                                 }
                             ]
@@ -754,8 +719,6 @@
                         options: {
 
                             responsive: true,
-
-                            maintainAspectRatio: true,
 
                             plugins: {
 
@@ -777,9 +740,7 @@
 
     {% else %}
 
-        <!-- ================================= -->
         <!-- Empty State -->
-        <!-- ================================= -->
 
         <div class="card shadow-sm border-0">
 

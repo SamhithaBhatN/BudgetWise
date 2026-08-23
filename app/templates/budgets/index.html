@@ -6,10 +6,7 @@
 
 <div class="container py-5">
 
-    <!-- ================================= -->
     <!-- Page Header -->
-    <!-- ================================= -->
-
     <div class="mb-5">
 
         <h2 class="fw-bold">
@@ -23,10 +20,7 @@
     </div>
 
 
-    <!-- ================================= -->
     <!-- Budget Summary -->
-    <!-- ================================= -->
-
     <div class="row g-4 mb-5">
 
         <!-- Total Budget -->
@@ -41,7 +35,7 @@
                     </div>
 
                     <h3 class="fw-bold mb-0">
-                        ₹{{ "{:,.2f}".format(total_budget) }}
+                        {{ currency_symbol }}{{ "{:,.2f}".format(total_budget) }}
                     </h3>
 
                 </div>
@@ -63,7 +57,7 @@
                     </div>
 
                     <h3 class="fw-bold text-danger mb-0">
-                        ₹{{ "{:,.2f}".format(total_spent) }}
+                        {{ currency_symbol }}{{ "{:,.2f}".format(total_spent) }}
                     </h3>
 
                 </div>
@@ -91,7 +85,7 @@
                             text-danger
                         {% endif %}
                     ">
-                        ₹{{ "{:,.2f}".format(total_remaining) }}
+                        {{ currency_symbol }}{{ "{:,.2f}".format(total_remaining) }}
                     </h3>
 
                 </div>
@@ -133,17 +127,11 @@
     </div>
 
 
-    <!-- ================================= -->
     <!-- Main Budget Section -->
-    <!-- ================================= -->
-
     <div class="row g-4">
 
 
-        <!-- ================================= -->
         <!-- Add Budget -->
-        <!-- ================================= -->
-
         <div class="col-lg-5">
 
             <div class="card shadow-sm border-0">
@@ -192,7 +180,7 @@
                             <div class="input-group">
 
                                 <span class="input-group-text">
-                                    ₹
+                                    {{ currency_symbol }}
                                 </span>
 
                                 {{ form.amount(
@@ -258,7 +246,6 @@
                         </div>
 
 
-                        <!-- Submit -->
                         {{ form.submit(
                             class="btn btn-success w-100"
                         ) }}
@@ -272,10 +259,7 @@
         </div>
 
 
-        <!-- ================================= -->
         <!-- Existing Budgets -->
-        <!-- ================================= -->
-
         <div class="col-lg-7">
 
             <div class="card shadow-sm border-0">
@@ -312,10 +296,7 @@
                                 <div class="list-group-item px-0 py-4">
 
 
-                                    <!-- ============================== -->
                                     <!-- Budget Header -->
-                                    <!-- ============================== -->
-
                                     <div class="d-flex justify-content-between align-items-start">
 
                                         <div>
@@ -334,7 +315,6 @@
                                         <!-- Actions -->
                                         <div class="d-flex gap-2">
 
-                                            <!-- Edit -->
                                             <a href="{{ url_for(
                                                 'budgets.edit_budget',
                                                 id=budget.id
@@ -347,7 +327,6 @@
                                             </a>
 
 
-                                            <!-- Delete -->
                                             <form method="POST"
                                                   action="{{ url_for(
                                                       'budgets.delete_budget',
@@ -374,14 +353,9 @@
                                     </div>
 
 
-                                    <!-- ============================== -->
                                     <!-- Budget Summary -->
-                                    <!-- ============================== -->
-
                                     <div class="row g-3 mt-3">
 
-
-                                        <!-- Budget -->
                                         <div class="col-4">
 
                                             <div class="small text-muted">
@@ -389,13 +363,12 @@
                                             </div>
 
                                             <div class="fw-bold">
-                                                ₹{{ "{:,.2f}".format(budget.amount) }}
+                                                {{ currency_symbol }}{{ "{:,.2f}".format(budget.amount) }}
                                             </div>
 
                                         </div>
 
 
-                                        <!-- Spent -->
                                         <div class="col-4">
 
                                             <div class="small text-muted">
@@ -403,13 +376,12 @@
                                             </div>
 
                                             <div class="fw-bold text-danger">
-                                                ₹{{ "{:,.2f}".format(spent) }}
+                                                {{ currency_symbol }}{{ "{:,.2f}".format(spent) }}
                                             </div>
 
                                         </div>
 
 
-                                        <!-- Remaining -->
                                         <div class="col-4">
 
                                             <div class="small text-muted">
@@ -424,7 +396,7 @@
                                                 {% endif %}
                                             ">
 
-                                                ₹{{ "{:,.2f}".format(remaining) }}
+                                                {{ currency_symbol }}{{ "{:,.2f}".format(remaining) }}
 
                                             </div>
 
@@ -433,12 +405,8 @@
                                     </div>
 
 
-                                    <!-- ============================== -->
                                     <!-- Progress -->
-                                    <!-- ============================== -->
-
                                     <div class="mt-4">
-
 
                                         <div class="d-flex justify-content-between align-items-center mb-2">
 
@@ -487,7 +455,6 @@
                                         </div>
 
 
-                                        <!-- Over Budget -->
                                         {% if percentage > 100 %}
 
                                             <div class="small text-danger mt-2">
@@ -495,12 +462,10 @@
                                                 <i class="bi bi-exclamation-triangle"></i>
 
                                                 Budget exceeded by
-                                                ₹{{ "{:,.2f}".format(-remaining) }}
+                                                {{ currency_symbol }}{{ "{:,.2f}".format(-remaining) }}
 
                                             </div>
 
-
-                                        <!-- Approaching Budget -->
                                         {% elif percentage >= 80 %}
 
                                             <div class="small text-warning mt-2">
@@ -524,8 +489,6 @@
 
                     {% else %}
 
-
-                        <!-- Empty State -->
                         <div class="text-center py-5">
 
                             <div class="mb-3">

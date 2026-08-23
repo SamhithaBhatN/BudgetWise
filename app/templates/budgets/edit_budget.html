@@ -22,6 +22,7 @@
 
                         {{ form.hidden_tag() }}
 
+
                         <!-- Category -->
                         <div class="mb-3">
 
@@ -43,6 +44,7 @@
 
                         </div>
 
+
                         <!-- Amount -->
                         <div class="mb-3">
 
@@ -53,7 +55,7 @@
                             <div class="input-group">
 
                                 <span class="input-group-text">
-                                    ₹
+                                    {{ currency_symbol }}
                                 </span>
 
                                 {{ form.amount(
@@ -71,6 +73,7 @@
                             {% endfor %}
 
                         </div>
+
 
                         <!-- Month -->
                         <div class="mb-3">
@@ -93,6 +96,7 @@
 
                         </div>
 
+
                         <!-- Year -->
                         <div class="mb-4">
 
@@ -114,6 +118,7 @@
 
                         </div>
 
+
                         <div class="d-flex gap-2">
 
                             {{ form.submit(
@@ -123,7 +128,9 @@
 
                             <a href="{{ url_for('budgets.index') }}"
                                class="btn btn-outline-secondary">
+
                                 Cancel
+
                             </a>
 
                         </div>

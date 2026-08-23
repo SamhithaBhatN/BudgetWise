@@ -20,7 +20,7 @@ class Transaction(db.Model):
     )
 
     amount = db.Column(
-        db.Float,
+        db.Numeric(14, 2),
         nullable=False
     )
 

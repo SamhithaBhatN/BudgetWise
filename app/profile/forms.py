@@ -44,10 +44,7 @@ class ProfileForm(FlaskForm):
     currency = SelectField(
         "Currency",
         choices=[
-            ("INR", "Indian Rupee (₹)"),
-            ("USD", "US Dollar ($)"),
-            ("EUR", "Euro (€)"),
-            ("GBP", "British Pound (£)")
+            ("INR", "Indian Rupee (₹)")
         ],
         validators=[
             DataRequired()
