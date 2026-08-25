@@ -193,4 +193,4 @@ def test_logout(client, app):
     )
 
     assert response.status_code == 200
-    assert b"Logged out successfully!" in response.data
+    assert b"Logged out successfully!" in response.data 

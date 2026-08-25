@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from config import Config
 
 from flask_login import current_user
@@ -103,5 +103,19 @@ def create_app():
             "currency_symbol": "₹"
         }
 
+    @flask_app.errorhandler(404)
+    def page_not_found(error):
+        return render_template(
+            "errors/404.html"
+        ), 404
+
+
+    @flask_app.errorhandler(500)
+    def internal_server_error(error):
+        db.session.rollback()
+
+        return render_template(
+            "errors/500.html"
+        ), 500
 
     return flask_app
