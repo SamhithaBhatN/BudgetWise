@@ -11,29 +11,31 @@ from app.notifications.utils import create_notification
 def generate_budget_notifications(user_id):
 
     # ----------------------------------------
-    # Get user notification settings
+    # Get or create user notification settings
     # ----------------------------------------
 
     user_settings = UserSettings.query.filter_by(
         user_id=user_id
     ).first()
 
+    if user_settings is None:
 
-    # If settings do not exist, use the default:
-    # Budget alerts enabled.
-    budget_alerts_enabled = (
-        user_settings is None
-        or user_settings.budget_alerts_enabled
-    )
+        user_settings = UserSettings(
+            user_id=user_id,
+            budget_alerts_enabled=True,
+            goal_reminders_enabled=True
+        )
+
+        db.session.add(user_settings)
+        db.session.flush()
 
 
     # ----------------------------------------
     # Budget Alerts Disabled
     # ----------------------------------------
 
-    if not budget_alerts_enabled:
+    if not user_settings.budget_alerts_enabled:
 
-        # Remove active unread budget alerts.
         Notification.query.filter(
             Notification.user_id == user_id,
             Notification.is_read == False,
@@ -56,7 +58,9 @@ def generate_budget_notifications(user_id):
 
     budgets = (
         Budget.query
-        .filter_by(user_id=user_id)
+        .filter_by(
+            user_id=user_id
+        )
         .all()
     )
 
