@@ -96,7 +96,10 @@ def create_goal(
 ):
 
     if target_date is None:
-        target_date = date.today() + timedelta(days=30)
+
+        target_date = (
+            date.today() + timedelta(days=30)
+        )
 
     with app.app_context():
 
@@ -298,7 +301,9 @@ def test_goal_reminder_generated_within_seven_days(
         name="Laptop",
         target_amount=50000,
         current_amount=10000,
-        target_date=date.today() + timedelta(days=3)
+        target_date=(
+            date.today() + timedelta(days=3)
+        )
     )
 
     login_user(
@@ -306,8 +311,9 @@ def test_goal_reminder_generated_within_seven_days(
         "reminder@example.com"
     )
 
+    # Goal reminder generation happens on /goals/
     response = client.get(
-        "/notifications/"
+        "/goals/"
     )
 
     assert response.status_code == 200
@@ -323,7 +329,7 @@ def test_goal_reminder_generated_within_seven_days(
 
         assert notification is not None
         assert notification.title == "Goal Reminder"
-        assert b'due in 3 days' in response.data
+        assert "due in 3 days" in notification.message
 
 
 def test_goal_reminder_due_tomorrow(
@@ -350,7 +356,9 @@ def test_goal_reminder_due_tomorrow(
         name="Trip",
         target_amount=30000,
         current_amount=5000,
-        target_date=date.today() + timedelta(days=1)
+        target_date=(
+            date.today() + timedelta(days=1)
+        )
     )
 
     login_user(
@@ -358,8 +366,9 @@ def test_goal_reminder_due_tomorrow(
         "tomorrow@example.com"
     )
 
+    # Goal reminder generation happens on /goals/
     response = client.get(
-        "/notifications/"
+        "/goals/"
     )
 
     assert response.status_code == 200
@@ -401,7 +410,9 @@ def test_completed_goal_does_not_generate_reminder(
         name="Completed Goal",
         target_amount=20000,
         current_amount=20000,
-        target_date=date.today() + timedelta(days=2)
+        target_date=(
+            date.today() + timedelta(days=2)
+        )
     )
 
     login_user(
@@ -409,9 +420,12 @@ def test_completed_goal_does_not_generate_reminder(
         "completed@example.com"
     )
 
-    client.get(
-        "/notifications/"
+    # Goal reminder generation happens on /goals/
+    response = client.get(
+        "/goals/"
     )
+
+    assert response.status_code == 200
 
     with app.app_context():
 
@@ -448,7 +462,9 @@ def test_goal_reminders_disabled(
         name="Disabled Reminder Goal",
         target_amount=20000,
         current_amount=5000,
-        target_date=date.today() + timedelta(days=3)
+        target_date=(
+            date.today() + timedelta(days=3)
+        )
     )
 
     login_user(
@@ -456,9 +472,12 @@ def test_goal_reminders_disabled(
         "disabled@example.com"
     )
 
-    client.get(
-        "/notifications/"
+    # Goal reminder generation happens on /goals/
+    response = client.get(
+        "/goals/"
     )
+
+    assert response.status_code == 200
 
     with app.app_context():
 
@@ -495,7 +514,9 @@ def test_old_goal_reminder_is_removed_outside_window(
         name="Future Goal",
         target_amount=40000,
         current_amount=5000,
-        target_date=date.today() + timedelta(days=30)
+        target_date=(
+            date.today() + timedelta(days=30)
+        )
     )
 
     with app.app_context():
@@ -517,9 +538,12 @@ def test_old_goal_reminder_is_removed_outside_window(
         "oldreminder@example.com"
     )
 
-    client.get(
-        "/notifications/"
+    # Goal reminder generation happens on /goals/
+    response = client.get(
+        "/goals/"
     )
+
+    assert response.status_code == 200
 
     with app.app_context():
 
