@@ -26,6 +26,7 @@
 
             </div>
 
+
             <a href="{{ url_for('transactions.add_transaction') }}"
                class="btn btn-success dashboard-add-btn">
 
@@ -171,6 +172,7 @@
 
         <div class="row g-4 mt-2">
 
+
             <!-- Budget Overview -->
             <div class="col-lg-6">
 
@@ -286,7 +288,11 @@
                                 "
                                      style="width: {{
                                          [overall_budget_percentage, 100]|min
-                                     }}%;">
+                                     }}%;"
+                                     role="progressbar"
+                                     aria-valuenow="{{ overall_budget_percentage }}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
 
                                 </div>
 
@@ -404,9 +410,13 @@
                                  style="height: 10px;">
 
                                 <div class="progress-bar bg-success"
+                                     role="progressbar"
                                      style="width: {{
                                          [overall_goal_percentage, 100]|min
-                                     }}%;">
+                                     }}%;"
+                                     aria-valuenow="{{ overall_goal_percentage }}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
 
                                 </div>
 
@@ -438,12 +448,15 @@
                     <i class="bi bi-bell me-2"></i>
 
                     You have
+
                     <strong>
                         {{ unread_notification_count }}
                     </strong>
+
                     unread notification{{ "s" if unread_notification_count != 1 else "" }}.
 
                 </div>
+
 
                 <a href="{{ url_for('notifications.index') }}"
                    class="btn btn-sm btn-outline-dark">
@@ -476,6 +489,7 @@
                     </p>
 
                 </div>
+
 
                 <a href="{{ url_for('transactions.index') }}"
                    class="btn btn-outline-success">
@@ -549,6 +563,7 @@
 
                                                 </span>
 
+
                                                 <strong>
                                                     {{ transaction.title }}
                                                 </strong>
@@ -589,9 +604,11 @@
                                         <td>
 
                                             <span class="date-text">
+
                                                 {{ transaction.date.strftime(
                                                     "%d %b %Y"
                                                 ) }}
+
                                             </span>
 
                                         </td>
