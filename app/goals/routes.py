@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 from app.goals import goals
 from app.goals.forms import GoalForm
 from app.models.goal import Goal
+from app.models.notification import Notification
 from app.extensions import db
 from app.notifications.goal_services import generate_goal_notifications
 
@@ -103,6 +104,15 @@ def delete_goal(id):
         user_id=current_user.id
     ).first_or_404()
 
+    # Delete notifications linked to this goal
+    Notification.query.filter_by(
+        user_id=current_user.id,
+        goal_id=goal.id
+    ).delete(
+        synchronize_session=False
+    )
+
+    # Delete the goal
     db.session.delete(goal)
     db.session.commit()
 

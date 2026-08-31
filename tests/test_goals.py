@@ -389,3 +389,71 @@ def test_user_cannot_delete_another_users_goal(
         )
 
         assert goal is not None
+
+
+def test_delete_goal_removes_related_notifications(
+    client,
+    app
+):
+
+    user_id = create_user(
+        app,
+        "Delete Goal Notification User",
+        "deletegoalnotificationuser",
+        "deletegoalnotification@example.com"
+    )
+
+    login_user(
+        client,
+        "deletegoalnotification@example.com"
+    )
+
+    target_date = date.today() + timedelta(days=7)
+
+    with app.app_context():
+
+        goal = Goal(
+            user_id=user_id,
+            name="Delete Notification Goal",
+            target_amount=20000,
+            current_amount=5000,
+            target_date=target_date
+        )
+
+        db.session.add(goal)
+        db.session.commit()
+
+        notification = Notification(
+            user_id=user_id,
+            goal_id=goal.id,
+            title="Goal Reminder",
+            message="Test goal reminder",
+            type="goal_reminder",
+            is_read=False
+        )
+
+        db.session.add(notification)
+        db.session.commit()
+
+        goal_id = goal.id
+        notification_id = notification.id
+
+    response = client.post(
+        f"/goals/delete/{goal_id}",
+        follow_redirects=True
+    )
+
+    assert response.status_code == 200
+    assert b"Savings goal deleted successfully!" in response.data
+
+    with app.app_context():
+
+        assert db.session.get(
+            Goal,
+            goal_id
+        ) is None
+
+        assert db.session.get(
+            Notification,
+            notification_id
+        ) is None

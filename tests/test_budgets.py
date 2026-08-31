@@ -667,3 +667,77 @@ def test_budget_notification_service_directly(app):
 
         assert notification is not None
         assert notification.title == "Budget Warning"
+
+
+def test_delete_budget_removes_related_notifications(
+    client,
+    app
+):
+
+    user_id = create_user(
+        app,
+        "Delete Budget Notification User",
+        "deletebudgetnotificationuser",
+        "deletebudgetnotification@example.com"
+    )
+
+    category_id = create_expense_category(
+        app,
+        user_id,
+        name="Delete Test"
+    )
+
+    login_user(
+        client,
+        "deletebudgetnotification@example.com"
+    )
+
+    today = date.today()
+
+    with app.app_context():
+
+        budget = Budget(
+            user_id=user_id,
+            category_id=category_id,
+            amount=10000,
+            month=today.month,
+            year=today.year
+        )
+
+        db.session.add(budget)
+        db.session.commit()
+
+        notification = Notification(
+            user_id=user_id,
+            budget_id=budget.id,
+            title="Budget Warning",
+            message="Test budget notification",
+            type="budget_warning",
+            is_read=False
+        )
+
+        db.session.add(notification)
+        db.session.commit()
+
+        budget_id = budget.id
+        notification_id = notification.id
+
+    response = client.post(
+        f"/budgets/delete/{budget_id}",
+        follow_redirects=True
+    )
+
+    assert response.status_code == 200
+    assert b"Budget deleted successfully!" in response.data
+
+    with app.app_context():
+
+        assert db.session.get(
+            Budget,
+            budget_id
+        ) is None
+
+        assert db.session.get(
+            Notification,
+            notification_id
+        ) is None

@@ -9,6 +9,7 @@ from app.budgets import budgets
 from app.budgets.forms import BudgetForm
 from app.models.budget import Budget
 from app.models.category import Category
+from app.models.notification import Notification
 from app.models.transaction import Transaction
 from app.extensions import db
 from app.notifications.services import generate_budget_notifications
@@ -363,6 +364,15 @@ def delete_budget(id):
         user_id=current_user.id
     ).first_or_404()
 
+    # Delete notifications linked to this budget
+    Notification.query.filter_by(
+        user_id=current_user.id,
+        budget_id=budget.id
+    ).delete(
+        synchronize_session=False
+    )
+
+    # Delete the budget
     db.session.delete(budget)
     db.session.commit()
 
