@@ -428,6 +428,14 @@ BudgetWise/
 │   ├── README
 │   └── script.py.mako
 │
+├── screenshots/
+│   ├── landing-page.png
+│   ├── dashboard.png
+│   ├── transactions.png
+│   ├── budgets.png
+│   ├── savings-goals.png
+│   └── reports.png
+│
 ├── tests/
 │   ├── __init__.py
 │   ├── conftest.py
@@ -441,8 +449,8 @@ BudgetWise/
 ├── .gitignore
 ├── CHANGELOG.md
 ├── config.py
-├── migrate.bat
 ├── requirements.txt
+├── migrate.bat
 ├── run.bat
 ├── run.py
 └── upgrade.bat
@@ -619,7 +627,7 @@ Example:
 )
 ```
 
-Edit and delete operations also validate record ownership.
+Edit and delete operations also validate ownership.
 
 ### Debug Configuration
 
@@ -720,6 +728,8 @@ app/notifications/goal_services.py
 
 Both systems respect the user's notification preferences.
 
+When a budget or savings goal is deleted, its associated notifications are also removed to prevent orphaned notifications.
+
 ---
 
 ## 📈 Reports & Analytics
@@ -781,6 +791,7 @@ Covers:
 - Budget exceeded notifications
 - Ownership protection
 - Notification service behavior
+- Notification cleanup when deleting budgets
 
 #### Goals
 
@@ -796,6 +807,7 @@ Covers:
 - Goal editing
 - Goal deletion
 - Ownership protection
+- Notification cleanup when deleting goals
 
 #### Notifications
 
@@ -854,7 +866,7 @@ pytest -v
 ### Current Test Result
 
 ```text
-45 / 45 tests passing
+47 / 47 tests passing
 ```
 
 The test suite uses an isolated test database configuration.
@@ -1028,26 +1040,29 @@ git log -5 --oneline
 
 ## 📸 Screenshots
 
-Screenshots of the main BudgetWise pages can be added here.
+### Landing Page
 
-Recommended screenshots:
+![BudgetWise Landing Page](screenshots/landing-page.png)
 
-1. Landing Page
-2. Dashboard
-3. Transactions
-4. Categories
-5. Budgets
-6. Savings Goals
-7. Reports
-8. Notifications
-9. Profile
-10. Settings
+### Dashboard
 
-Example:
-
-```markdown
 ![BudgetWise Dashboard](screenshots/dashboard.png)
-```
+
+### Transactions
+
+![BudgetWise Transactions](screenshots/transactions.png)
+
+### Budgets
+
+![BudgetWise Budgets](screenshots/budgets.png)
+
+### Savings Goals
+
+![BudgetWise Savings Goals](screenshots/savings-goals.png)
+
+### Reports
+
+![BudgetWise Reports](screenshots/reports.png)
 
 ---
 
@@ -1069,6 +1084,8 @@ Current functionality:
 ✅ Savings goals
 ✅ Goal reminders
 ✅ Notification management
+✅ Notification cleanup on budget deletion
+✅ Notification cleanup on goal deletion
 ✅ Monthly financial reports
 ✅ Category-wise expense analysis
 ✅ Six-month financial trends
@@ -1085,7 +1102,7 @@ Current functionality:
 ### Automated Test Status
 
 ```text
-45 / 45 tests passing
+47 / 47 tests passing
 ```
 
 ---
