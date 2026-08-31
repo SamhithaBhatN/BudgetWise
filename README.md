@@ -2,6 +2,13 @@
 
 > Smart Personal Finance & Expense Management System built with Python, Flask, MySQL, SQLAlchemy, Bootstrap, and pytest.
 
+[![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.1.3-black?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0.51-red?logo=sqlalchemy&logoColor=white)](https://www.sqlalchemy.org/)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-5-purple?logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
+[![Tests](https://img.shields.io/badge/Tests-47%20passing-success?logo=pytest&logoColor=white)](https://pytest.org/)
+
 BudgetWise is a full-stack web application designed to help individuals organize and manage their personal finances in one place. It provides features for tracking income and expenses, organizing transactions by category, creating monthly budgets, monitoring savings goals, receiving financial notifications, and generating monthly financial reports.
 
 The application currently uses **INR (₹)** as its supported currency and includes secure authentication, user-specific data isolation, form validation, database migrations, and automated testing.
