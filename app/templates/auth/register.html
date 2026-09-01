@@ -25,26 +25,88 @@
                 <div class="mb-3">
                     {{ form.full_name.label(class="form-label") }}
                     {{ form.full_name(class="form-control") }}
+
+                    {% for error in form.full_name.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
                 </div>
 
                 <div class="mb-3">
                     {{ form.username.label(class="form-label") }}
                     {{ form.username(class="form-control") }}
+
+                    {% for error in form.username.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
                 </div>
 
                 <div class="mb-3">
                     {{ form.email.label(class="form-label") }}
                     {{ form.email(class="form-control") }}
+
+                    {% for error in form.email.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
                 </div>
 
                 <div class="mb-3">
                     {{ form.password.label(class="form-label") }}
-                    {{ form.password(class="form-control") }}
+
+                    <div class="input-group">
+                        {{ form.password(
+                            class="form-control",
+                            id="register-password"
+                        ) }}
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            id="toggle-register-password"
+                            aria-label="Show password"
+                            title="Show password"
+                        >
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+
+                    {% for error in form.password.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
                 </div>
 
                 <div class="mb-4">
                     {{ form.confirm_password.label(class="form-label") }}
-                    {{ form.confirm_password(class="form-control") }}
+
+                    <div class="input-group">
+                        {{ form.confirm_password(
+                            class="form-control",
+                            id="register-confirm-password"
+                        ) }}
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            id="toggle-register-confirm-password"
+                            aria-label="Show password"
+                            title="Show password"
+                        >
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+
+                    {% for error in form.confirm_password.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
                 </div>
 
                 <div class="d-grid">
@@ -63,5 +125,70 @@
     </div>
 
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    function setupPasswordToggle(inputId, buttonId) {
+
+        const passwordInput = document.getElementById(inputId);
+        const toggleButton = document.getElementById(buttonId);
+
+        if (!passwordInput || !toggleButton) {
+            return;
+        }
+
+        toggleButton.addEventListener("click", function () {
+
+            const icon = toggleButton.querySelector("i");
+
+            if (passwordInput.type === "password") {
+
+                passwordInput.type = "text";
+
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+
+                toggleButton.setAttribute(
+                    "aria-label",
+                    "Hide password"
+                );
+
+                toggleButton.setAttribute(
+                    "title",
+                    "Hide password"
+                );
+
+            } else {
+
+                passwordInput.type = "password";
+
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+
+                toggleButton.setAttribute(
+                    "aria-label",
+                    "Show password"
+                );
+
+                toggleButton.setAttribute(
+                    "title",
+                    "Show password"
+                );
+            }
+        });
+    }
+
+    setupPasswordToggle(
+        "register-password",
+        "toggle-register-password"
+    );
+
+    setupPasswordToggle(
+        "register-confirm-password",
+        "toggle-register-confirm-password"
+    );
+});
+</script>
 
 {% endblock %}
