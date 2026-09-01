@@ -13,8 +13,22 @@ class Config:
         "SECRET_KEY"
     )
 
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
+    database_url = os.environ.get(
         "DATABASE_URL"
     )
+
+    # Railway may provide a generic mysql:// URL.
+    # Explicitly use PyMySQL because it is the project's
+    # installed MySQL driver.
+    if database_url and database_url.startswith(
+        "mysql://"
+    ):
+        database_url = database_url.replace(
+            "mysql://",
+            "mysql+pymysql://",
+            1
+        )
+
+    SQLALCHEMY_DATABASE_URI = database_url
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
